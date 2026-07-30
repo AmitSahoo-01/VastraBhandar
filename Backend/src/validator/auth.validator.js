@@ -22,3 +22,10 @@ export const validateRegisterUser = [
     
     validateRequest
 ]
+
+export const validateLoginUser = [
+    body("email").isEmail().withMessage("Arree bhai tera sahi email dalna kyun gandu hoo raha hai!"),
+    body("password").isLength({min:6,max:20}).withMessage("Arree bhai password min 6 and max 20 characters ka nahi hai kya"),
+    
+    validateRequest
+]

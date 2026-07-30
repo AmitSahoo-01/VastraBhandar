@@ -23,3 +23,18 @@ export async function register({fullname,email,contact,password,isSeller}){
         throw error;
     }
 }
+
+
+export async function login({email,password}) {
+    try{
+        const response = await authApi.post("/login",{
+            email,
+            password
+        });
+
+        return response.data;
+    }catch(error){
+        console.log("Error in login service: ",error);
+        throw error;
+    }
+}
