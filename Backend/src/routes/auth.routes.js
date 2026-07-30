@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validateRegisterUser,validateLoginUser } from "../validator/auth.validator.js";
 import {register,login,googleAuthController} from '../controller/auth.controller.js';
-
+import passport from "passport";
 const router = Router();
 
 /*

@@ -4,12 +4,13 @@ import morgan from 'morgan';
 import cors from "cors";
 import { config } from '../src/config/config.js';
 
-//  setup for google oauth
+//  import for google oauth
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
-// routes import
+// import routes 
 import authRouter from './routes/auth.routes.js';
+import productRouter from "./routes/product.routes.js";
 
 const app = express();
 
@@ -44,6 +45,6 @@ app.get('/',(req,res)=>{
 
 //  using routers
 app.use("/api/auth",authRouter);
-
+app.use("api/auth",productRouter);
 
 export default app;

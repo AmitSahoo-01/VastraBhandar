@@ -149,7 +149,7 @@ const Register = () => {
           {/* VB Logo top-right */}
           <div className="absolute top-5 right-6">
             <img
-              src="/vb-logo.png"
+              src="/favicon.png"
               alt="VB"
               className="w-10 h-10 object-contain"
             />
@@ -313,7 +313,7 @@ const Register = () => {
               </div>
             </div>
 
-            <a href="api/auth/google" className="w-full block">
+            <a href="http://localhost:3000/api/auth/google" className="w-full block">
               <button
                 type="button"
                 className="w-full mt-1.5 h-12 bg-white border-none rounded-xl text-black text-[14px] font-bold cursor-pointer flex items-center justify-center gap-2 tracking-wide transition-all duration-200  disabled:opacity-70 disabled:cursor-not-allowed font-inter"
