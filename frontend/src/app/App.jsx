@@ -2,15 +2,18 @@ import React from 'react'
 import "./App.css";
 import { RouterProvider } from 'react-router-dom';
 import {routes} from './app.routes.jsx';
-import { Provider } from 'react-redux';
-  import { store } from './app.store.js';
+import { useSelector } from 'react-redux';
+
 
 const App = () => {
+
+   const user = useSelector(state => state.auth.user);
+    
+  console.log(user);
+
   return (
     <>
-      <Provider store={store}>
-        <RouterProvider router={routes} />
-      </Provider>
+      <RouterProvider router={routes} />
     </>
   )
 }

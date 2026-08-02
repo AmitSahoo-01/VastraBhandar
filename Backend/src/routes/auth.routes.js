@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { validateRegisterUser,validateLoginUser } from "../validator/auth.validator.js";
-import {register,login,googleAuthController} from '../controller/auth.controller.js';
+import {register,login,googleAuthController,getMe} from '../controller/auth.controller.js';
 import passport from "passport";
+import { authenticateUser } from "../middlewares/auth.middleware.js";
+
+
 const router = Router();
 
 /*
@@ -28,6 +31,7 @@ router.get("/google/callback", passport.authenticate("google",{
     failureRedirect:"http://localhost:5173/login",  
 }),googleAuthController);
 
-
+//    getMe route here 
+router.get("/getMe",authenticateUser,getMe);
 
 export default router;

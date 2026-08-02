@@ -129,3 +129,22 @@ export const googleAuthController = async(req,res)=>{
         res.status(500).json({message:"Internal Server Error"});    
     }
 }
+
+
+//   getMe controller for access the login user details
+
+export const getMe = async (req,res)=>{
+    const user = req.user;
+
+    if(!user){
+        return res.status(404).json({
+            message:"User not found"
+        });
+    }
+
+    return res.status(200).json({
+        message:"User fetched successfully",
+        success:true,
+        user
+    });
+}
