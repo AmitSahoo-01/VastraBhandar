@@ -38,3 +38,14 @@ export async function login({email,password}) {
         throw error;
     }
 }
+
+export async function getMe() {
+    try{
+        const response = await authApi.get("/getMe");
+        return response.data;
+    }catch(error){
+        console.log("Error in getMe service: ",error);
+        throw error;
+    }
+    
+}

@@ -1,7 +1,7 @@
 import express from "express";
 //  import authenticateSeller middleware for authinticate seller
 import {authenticateSeller} from "../middlewares/auth.middleware.js";
-import { createProduct, getSellerProducts } from "../controller/product.controller.js";
+import { createProduct, getSellerProducts,getAllProducts } from "../controller/product.controller.js";
 //  import createProductValidator 
 import { createProductValidator } from "../validator/product.validator.js";
 
@@ -34,3 +34,7 @@ router.post("/",authenticateSeller,upload.array("images",7),createProductValidat
 //  showing all products created by seller
 router.get("/seller-products",authenticateSeller,getSellerProducts);
 export default router;
+
+//   get --> api/products/
+//  it is the route for public where user can see all the listed products
+router.get("/",getAllProducts);

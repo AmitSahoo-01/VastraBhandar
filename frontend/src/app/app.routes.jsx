@@ -3,12 +3,14 @@ import Register from "../features/auth/pages/Register.jsx";
 import Login from "../features/auth/pages/Login.jsx";
 import Dashboard from "../features/product/pages/Dashboard.jsx";
 import CreateProduct from "../features/product/pages/CreateProduct.jsx";
+import Protected from "../features/auth/component/Protected.jsx";
+import Home from "../features/product/pages/Home.jsx";
 
 
 export const routes = createBrowserRouter([
     {
         path:"/",
-        element: <h1 className="text-red-500">Home Page</h1>
+        element: <Home/>
     },{
         path:"/login",
         element: <Login/>
@@ -19,10 +21,10 @@ export const routes = createBrowserRouter([
     },
     {
         path:"seller/dashboard",
-        element: <Dashboard/>
+        element: <Protected role="seller" ><Dashboard/></Protected>
     },
     { 
         path:"seller/create",
-        element: <CreateProduct/>
+        element: <Protected role="seller" ><CreateProduct/></Protected>
     }
 ])

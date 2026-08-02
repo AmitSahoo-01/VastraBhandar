@@ -66,3 +66,20 @@ export const getSellerProducts = async(req,res) =>{
         });
     }
 };
+
+
+
+export const getAllProducts = async (req,res)=>{
+    try{
+        const products = await productModel.find();
+        return res.status(200).json({
+            message:"Products fetched successfully",
+            products
+        });
+    }catch(error){
+        console.error("Error in getAllProducts controller: ",error);
+        return res.status(500).json({
+            message:"Internal Server Error"
+        });
+    }
+};
