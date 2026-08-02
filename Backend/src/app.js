@@ -45,6 +45,6 @@ app.get('/',(req,res)=>{
 
 //  using routers
 app.use("/api/auth",authRouter);
-app.use("api/auth",productRouter);
+app.use("/api/products",productRouter);
 
 export default app;

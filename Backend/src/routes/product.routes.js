@@ -1,6 +1,9 @@
 import express from "express";
 //  import authenticateSeller middleware for authinticate seller
 import {authenticateSeller} from "../middlewares/auth.middleware.js";
+import { createProduct, getSellerProducts } from "../controller/product.controller.js";
+//  import createProductValidator 
+import { createProductValidator } from "../validator/product.validator.js";
 
 // import multer 
 import multer from "multer";
@@ -22,6 +25,12 @@ const upload = multer({
 
 const router = express.Router();
 
+//  post --> api/products/
+//  seller create a new prodduct
 router.post("/",authenticateSeller,upload.array("images",7),createProductValidator,createProduct);
 
+
+//  get --> api/products/
+//  showing all products created by seller
+router.get("/seller-products",authenticateSeller,getSellerProducts);
 export default router;
