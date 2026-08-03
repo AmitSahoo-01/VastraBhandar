@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useProduct } from '../hook/useProduct.js';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // ── Image Carousel inside each card ──────────────────────────────────────────
 const ImageCarousel = ({ images = [] }) => {
@@ -83,6 +84,7 @@ const ImageCarousel = ({ images = [] }) => {
 const ProductCard = ({ product }) => {
     const { title, description, price, images, createdAt } = product;
     const [hovered, setHovered] = useState(false);
+    const navigate = useNavigate();
 
     const formattedPrice = new Intl.NumberFormat('en-IN', {
         style: 'currency', currency: price?.currency || 'INR', maximumFractionDigits: 0,
@@ -94,6 +96,9 @@ const ProductCard = ({ product }) => {
 
     return (
         <div
+            onClick={()=>{
+                navigate(`/seller/product/${product._id}`)
+            }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             style={{

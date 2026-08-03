@@ -1,7 +1,7 @@
 import express from "express";
 //  import authenticateSeller middleware for authinticate seller
 import {authenticateSeller} from "../middlewares/auth.middleware.js";
-import { createProduct, getSellerProducts,getAllProducts,getProductDetails } from "../controller/product.controller.js";
+import { createProduct, getSellerProducts,getAllProducts,getProductDetails,createProductVariants } from "../controller/product.controller.js";
 //  import createProductValidator 
 import { createProductValidator } from "../validator/product.validator.js";
 
@@ -29,17 +29,21 @@ const router = express.Router();
 //  seller create a new prodduct
 router.post("/",authenticateSeller,upload.array("images",7),createProductValidator,createProduct);
 
-
-//  get --> api/products/
+//  get --> api/products/seller-products
 //  showing all products created by seller
 router.get("/seller-products",authenticateSeller,getSellerProducts);
-export default router;
 
-//   get --> api/products/
+//  get --> api/products/
 //  it is the route for public where user can see all the listed products
 router.get("/",getAllProducts);
 
-
-//get  --> api/products/detail/:id
+//  get --> api/products/detail/:id
 //  it is an route for we can fetch a single product details by id
-router.get("/detail/:id",getProductDetails); 
+router.get("/detail/:id",getProductDetails);
+
+// post  --> api/products/:productId/variants
+//  it is an route where seller can create and edit the variants of products
+//  NOTE: no createProductValidator here — variants only need priceAmount/stock/attributes
+router.post("/:productId/variants",authenticateSeller,upload.array("images",5),createProductVariants);
+
+export default router;

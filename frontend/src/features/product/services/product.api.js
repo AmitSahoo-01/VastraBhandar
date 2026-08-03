@@ -46,3 +46,25 @@ export async function getProductDetails(productId){
         throw error;
     }
 };
+
+
+export async function addProductVariant(productId,newProductVariant){
+    const formData = new FormData();
+
+    newProductVariant.images.forEach((image)=>{
+        formData.append("images",image.file);
+    });
+
+    
+    formData.append("priceAmount",newProductVariant.priceAmount);
+    formData.append("stock",newProductVariant.stock);
+    formData.append("attributes",JSON.stringify(newProductVariant.attributes));
+    
+    try{
+        const response = await productApi.post(`/${productId}/variants`,formData);
+        return response.data;
+    }catch(error){
+        console.log("Error in addProductVariant service: ",error);
+        throw error;
+    }
+}
