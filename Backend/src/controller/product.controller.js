@@ -83,3 +83,25 @@ export const getAllProducts = async (req,res)=>{
         });
     }
 };
+
+
+export const getProductDetails = async (req,res) =>{
+    const productId = req.params.id;
+    try{
+        const product = await productModel.findById(productId);
+        if(!product){
+            return res.status(404).json({
+                message:"Product not found"
+            });
+        }
+        return res.status(200).json({
+            message:"Product details fetched successfully",
+            product
+        });
+    }catch(error){
+        console.error("Error in getProductDetails controller: ",error);
+        return res.status(500).json({
+            message:"Internal Server Error"
+        });
+    }
+}

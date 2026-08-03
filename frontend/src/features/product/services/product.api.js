@@ -36,3 +36,13 @@ export async function getAllProducts(){
         throw error;
     }
 };
+
+export async function getProductDetails(productId){
+    try{
+        const response = await productApi.get(`/detail/${productId}`);
+        return response.data;
+    }catch(error){
+        console.log("Error in getProductDetails service: ",error);
+        throw error;
+    }
+};

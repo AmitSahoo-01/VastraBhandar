@@ -1,7 +1,7 @@
 import express from "express";
 //  import authenticateSeller middleware for authinticate seller
 import {authenticateSeller} from "../middlewares/auth.middleware.js";
-import { createProduct, getSellerProducts,getAllProducts } from "../controller/product.controller.js";
+import { createProduct, getSellerProducts,getAllProducts,getProductDetails } from "../controller/product.controller.js";
 //  import createProductValidator 
 import { createProductValidator } from "../validator/product.validator.js";
 
@@ -38,3 +38,8 @@ export default router;
 //   get --> api/products/
 //  it is the route for public where user can see all the listed products
 router.get("/",getAllProducts);
+
+
+//get  --> api/products/detail/:id
+//  it is an route for we can fetch a single product details by id
+router.get("/detail/:id",getProductDetails); 
