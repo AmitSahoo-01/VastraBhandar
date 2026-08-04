@@ -155,7 +155,7 @@ const CreateProduct = () => {
   const user = useSelector((state) => state.auth?.user);
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({ title: '', description: '', price: '', currency: '' });
+  const [form, setForm] = useState({ title: '', description: '', price: '', currency: 'INR', stock: '', color: '', size: '' });
   const [images, setImages] = useState(Array(7).fill(null));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -175,13 +175,16 @@ const CreateProduct = () => {
     else if (fields.title.length > 100) errs.title = 'Title cannot exceed 100 characters.';
 
     if (!fields.description.trim()) errs.description = 'Description is required.';
-    else if (fields.description.trim().length < 0) errs.description = 'Description must be at least in any characters range.';
     else if (fields.description.length > 1000) errs.description = 'Description cannot exceed 1000 characters.';
 
     if (!fields.price) errs.price = 'Price is required.';
     else if (isNaN(Number(fields.price)) || Number(fields.price) <= 0) errs.price = 'Enter a valid price greater than 0.';
 
     if (!fields.currency) errs.currency = 'Please select a currency.';
+    if (fields.stock === '' || isNaN(Number(fields.stock)) || Number(fields.stock) < 0) errs.stock = 'Stock quantity is required (0 or greater).';
+    if (!fields.color.trim()) errs.color = 'Product color is required.';
+    if (!fields.size.trim()) errs.size = 'Product size is required.';
+
     if (!imgs[0]) errs.images = 'At least one product image is required.';
     return errs;
   };
@@ -237,7 +240,7 @@ const CreateProduct = () => {
   // ─── Submit ───────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setTouched({ title: true, description: true, price: true, currency: true, images: true });
+    setTouched({ title: true, description: true, price: true, currency: true, stock: true, color: true, size: true, images: true });
     const errs = validate(form, images);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
@@ -249,6 +252,9 @@ const CreateProduct = () => {
       formData.append('description', form.description.trim());
       formData.append('priceAmount', form.price);
       formData.append('priceCurrency', form.currency);
+      formData.append('stock', form.stock);
+      formData.append('color', form.color.trim());
+      formData.append('size', form.size.trim());
       images.filter(Boolean).forEach((img) => formData.append('images', img));
       await handleCreateProduct(formData);
       setSubmitSuccess(true);
@@ -288,9 +294,9 @@ const CreateProduct = () => {
 
   // ─── Nav items ────────────────────────────────────────────────────────────
   const navItems = [
-    { icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', label: 'Dashboard' },
-    { icon: 'M12 4v16m8-8H4', label: 'Add Product', active: true },
-    { icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z', label: 'My Products' },
+    { icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', label: 'Dashboard', path: '/seller/dashboard' },
+    { icon: 'M12 4v16m8-8H4', label: 'Add Product', path: '/seller/create', active: true },
+    { icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z', label: 'My Products', path: '/seller/dashboard' },
     { icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', label: 'Orders' },
     { icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', label: 'Earnings' },
     { icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', label: 'Store Profile' },
@@ -325,10 +331,11 @@ const CreateProduct = () => {
             <button
               key={item.label}
               type="button"
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 text-left w-full
+              onClick={() => item.path && navigate(item.path)}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 text-left w-full cursor-pointer border-none
                 ${item.active
                   ? 'bg-[#E8490F] text-white font-semibold'
-                  : 'text-[#888] hover:text-white hover:bg-white/5'
+                  : 'text-[#888] hover:text-white hover:bg-white/5 bg-transparent'
                 }`}
             >
               <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" className="shrink-0">
@@ -506,6 +513,68 @@ const CreateProduct = () => {
                         hasError={!!(errors.currency && touched.currency)}
                       />
                       {errorMsg('currency')}
+                    </div>
+                  </div>
+
+                  {/* Stock, Color & Size row */}
+                  <div className="flex gap-4">
+                    {/* Stock */}
+                    <div className="flex-1 flex flex-col gap-1.5">
+                      <label className={labelClass}>
+                        Stock Quantity <span className="text-[#E8490F]">*</span>
+                      </label>
+                      <div className={inputWrap('stock')}>
+                        <input
+                          type="number"
+                          name="stock"
+                          value={form.stock}
+                          onChange={handleChange}
+                          onBlur={() => handleBlur('stock')}
+                          placeholder="e.g. 50"
+                          min="0"
+                          step="1"
+                          className="flex-1 bg-transparent border-none outline-none text-white text-[13px] placeholder-[#555]"
+                        />
+                      </div>
+                      {errorMsg('stock')}
+                    </div>
+
+                    {/* Color */}
+                    <div className="flex-1 flex flex-col gap-1.5">
+                      <label className={labelClass}>
+                        Color <span className="text-[#E8490F]">*</span>
+                      </label>
+                      <div className={inputWrap('color')}>
+                        <input
+                          type="text"
+                          name="color"
+                          value={form.color}
+                          onChange={handleChange}
+                          onBlur={() => handleBlur('color')}
+                          placeholder="e.g. Black"
+                          className="flex-1 bg-transparent border-none outline-none text-white text-[13px] placeholder-[#555]"
+                        />
+                      </div>
+                      {errorMsg('color')}
+                    </div>
+
+                    {/* Size */}
+                    <div className="flex-1 flex flex-col gap-1.5">
+                      <label className={labelClass}>
+                        Size <span className="text-[#E8490F]">*</span>
+                      </label>
+                      <div className={inputWrap('size')}>
+                        <input
+                          type="text"
+                          name="size"
+                          value={form.size}
+                          onChange={handleChange}
+                          onBlur={() => handleBlur('size')}
+                          placeholder="e.g. M / L / Free Size"
+                          className="flex-1 bg-transparent border-none outline-none text-white text-[13px] placeholder-[#555]"
+                        />
+                      </div>
+                      {errorMsg('size')}
                     </div>
                   </div>
                 </div>

@@ -354,13 +354,257 @@ const VariantFormCard = ({ variantIndex, variant, onChange, onRemove, onImageCli
   );
 };
 
-// ─── Existing Variant Badge ────────────────────────────────────────────────────
-const ExistingVariantCard = ({ variant, index }) => {
+// ─── Existing Variant Card (Editable & Deletable) ─────────────────────────────
+const ExistingVariantCard = ({ productId, variant, index, onRefresh }) => {
+  const { handleUpdateProductVariant, handleDeleteProductVariant } = useProduct();
+  const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const initialAttrs = variant.attributes
+    ? Object.entries(variant.attributes).map(([k, v]) => ({ key: k, value: String(v) }))
+    : [];
+
+  const [form, setForm] = useState({
+    priceAmount: variant.price?.amount || '',
+    currency: variant.price?.currency || 'INR',
+    stock: variant.stock ?? 0,
+    attributes: initialAttrs
+  });
+
+  const [images, setImages] = useState(Array(5).fill(null));
+  const fileInputRef = useRef(null);
+  const activeSlot = useRef(0);
+
   const sym = variant.price?.currency === 'USD' ? '$' : '₹';
   const attrs = variant.attributes ? Object.entries(variant.attributes) : [];
 
+  const handleAttrChange = (attrIdx, field, value) => {
+    const updated = [...form.attributes];
+    updated[attrIdx] = { ...updated[attrIdx], [field]: value };
+    setForm(f => ({ ...f, attributes: updated }));
+  };
+
+  const addAttribute = (key = '') => {
+    setForm(f => ({ ...f, attributes: [...f.attributes, { key, value: '' }] }));
+  };
+
+  const removeAttribute = (attrIdx) => {
+    setForm(f => ({ ...f, attributes: f.attributes.filter((_, i) => i !== attrIdx) }));
+  };
+
+  const handleSlotClick = (idx) => {
+    activeSlot.current = idx;
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const preview = URL.createObjectURL(file);
+    const updated = [...images];
+    updated[activeSlot.current] = { file, preview };
+    setImages(updated);
+    e.target.value = '';
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const attributesMap = {};
+      form.attributes.forEach(a => {
+        if (a.key.trim() && a.value.trim()) {
+          attributesMap[a.key.trim()] = a.value.trim();
+        }
+      });
+
+      const payload = {
+        priceAmount: form.priceAmount,
+        priceCurrency: form.currency,
+        stock: form.stock,
+        attributes: attributesMap,
+        images: images.filter(Boolean)
+      };
+
+      await handleUpdateProductVariant(productId, variant._id, payload);
+      setIsEditing(false);
+      if (onRefresh) await onRefresh();
+    } catch (err) {
+      console.error('Error updating variant:', err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm(`Are you sure you want to delete Variant ${index + 1}?`)) return;
+    setDeleting(true);
+    try {
+      await handleDeleteProductVariant(productId, variant._id);
+      if (onRefresh) await onRefresh();
+    } catch (err) {
+      console.error('Error deleting variant:', err);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <div className="bg-[#161616] border border-[#E8490F]/60 rounded-2xl p-5 flex flex-col gap-4">
+        <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
+        
+        <div className="flex items-center justify-between border-b border-[#2a2a2a] pb-3">
+          <span className="text-[#E8490F] text-[12px] font-bold">Edit Variant {index + 1}</span>
+          <button
+            type="button"
+            onClick={() => setIsEditing(false)}
+            className="text-[#888] hover:text-white text-[12px] cursor-pointer bg-transparent border-none"
+          >
+            Cancel
+          </button>
+        </div>
+
+        {/* Price, Currency, Stock row */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="flex flex-col gap-1">
+            <label className="text-[#bbb] text-[11px] font-semibold">Price Amount</label>
+            <input
+              type="number"
+              value={form.priceAmount}
+              onChange={e => setForm(f => ({ ...f, priceAmount: e.target.value }))}
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[#bbb] text-[11px] font-semibold">Currency</label>
+            <select
+              value={form.currency}
+              onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+            >
+              <option value="INR">INR (₹)</option>
+              <option value="USD">USD ($)</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[#bbb] text-[11px] font-semibold">Stock Quantity</label>
+            <input
+              type="number"
+              value={form.stock}
+              onChange={e => setForm(f => ({ ...f, stock: e.target.value }))}
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+            />
+          </div>
+        </div>
+
+        {/* Attributes section */}
+        <div>
+          <label className="text-[#bbb] text-[11px] font-semibold mb-2 block">Attributes (Size, Color, Fit, etc.)</label>
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            {SUGGESTED_ATTRIBUTES.map(attr => {
+              const exists = form.attributes.some(a => a.key.toLowerCase() === attr.toLowerCase());
+              return (
+                <button
+                  key={attr}
+                  type="button"
+                  disabled={exists}
+                  onClick={() => addAttribute(attr)}
+                  className={`px-2 py-0.5 rounded-lg text-[10px] font-semibold border transition-all cursor-pointer ${
+                    exists ? 'bg-[#E8490F]/10 border-[#E8490F]/30 text-[#E8490F] opacity-60 cursor-not-allowed' : 'bg-[#1a1a1a] border-[#2a2a2a] text-[#888] hover:text-[#E8490F]'
+                  }`}
+                >
+                  {exists ? '✓ ' : '+ '}{attr}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            {form.attributes.map((attr, attrIdx) => (
+              <div key={attrIdx} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={attr.key}
+                  onChange={e => handleAttrChange(attrIdx, 'key', e.target.value)}
+                  placeholder="Key (e.g. Size)"
+                  className="flex-1 bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[36px] text-white text-[12px] outline-none"
+                />
+                <span className="text-[#666]">:</span>
+                <input
+                  type="text"
+                  value={attr.value}
+                  onChange={e => handleAttrChange(attrIdx, 'value', e.target.value)}
+                  placeholder="Value (e.g. XL)"
+                  className="flex-1 bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[36px] text-white text-[12px] outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeAttribute(attrIdx)}
+                  className="w-7 h-7 rounded-lg bg-[#222] hover:bg-red-500/20 text-[#777] hover:text-red-400 flex items-center justify-center cursor-pointer border-none"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => addAttribute('')}
+            className="mt-2 text-[#666] hover:text-[#E8490F] text-[11px] font-semibold bg-transparent border-none cursor-pointer"
+          >
+            + Add custom attribute
+          </button>
+        </div>
+
+        {/* Upload replacement images */}
+        <div>
+          <label className="text-[#bbb] text-[11px] font-semibold mb-1 block">Variant Images (Optional)</label>
+          <div className="grid grid-cols-5 gap-2">
+            {images.map((imgObj, idx) => (
+              <ImageSlot
+                key={idx}
+                index={idx}
+                imageObj={imgObj}
+                onClick={() => handleSlotClick(idx)}
+                onRemove={(i) => {
+                  const updated = [...images];
+                  updated[i] = null;
+                  setImages(updated);
+                }}
+                isFirst={idx === 0}
+                hasError={false}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex justify-end gap-2 pt-2 border-t border-[#2a2a2a]">
+          <button
+            type="button"
+            onClick={() => setIsEditing(false)}
+            className="px-4 py-2 bg-[#222] hover:bg-[#333] rounded-xl text-[#ccc] text-[12px] font-semibold cursor-pointer border-none"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="px-5 py-2 bg-[#E8490F] hover:bg-[#c73a0a] rounded-xl text-white text-[12px] font-bold cursor-pointer border-none disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : 'Save Variant'}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-[#111] border border-[#1e1e1e] rounded-xl p-4 flex gap-4">
+    <div className="bg-[#111] border border-[#1e1e1e] rounded-xl p-4 flex gap-4 hover:border-[#2a2a2a] transition-all">
       {/* Image */}
       <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#1a1a1a] shrink-0 flex items-center justify-center border border-[#2a2a2a]">
         {variant.images?.[0]?.url ? (
@@ -378,16 +622,44 @@ const ExistingVariantCard = ({ variant, index }) => {
           <div className="flex items-center gap-2">
             <span className="text-[#666] text-[10px] font-semibold tracking-wide">VARIANT {index + 1}</span>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-2">
             <span className="text-[#E8490F] font-bold text-[14px]">
               {sym}{Number(variant.price?.amount).toLocaleString('en-IN')}
             </span>
-            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border
+            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border mr-2
               ${variant.stock > 0
                 ? 'bg-green-500/10 border-green-500/30 text-green-400'
                 : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
               {variant.stock > 0 ? `${variant.stock} in stock` : 'Out of stock'}
             </span>
+
+            {/* Edit button */}
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="p-1.5 rounded-lg bg-[#1c1c1c] border border-[#2a2a2a] text-[#aaa] hover:text-white hover:border-[#E8490F] transition-all cursor-pointer"
+              title="Edit Variant"
+            >
+              <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+            </button>
+
+            {/* Delete button */}
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
+              className="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all cursor-pointer border-none"
+              title="Delete Variant"
+            >
+              <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -403,6 +675,267 @@ const ExistingVariantCard = ({ variant, index }) => {
         ) : (
           <span className="text-[#555] text-[11px]">No attributes</span>
         )}
+      </div>
+    </div>
+  );
+};
+
+// ─── Base Product Card (Editable) ─────────────────────────────────────────────
+const BaseProductCard = ({ product, onRefresh }) => {
+  const { handleUpdateProduct } = useProduct();
+  const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    title: product.title || '',
+    description: product.description || '',
+    priceAmount: product.price?.amount || '',
+    priceCurrency: product.price?.currency || 'INR',
+    stock: product.stock ?? '',
+    color: product.color || '',
+    size: product.size || ''
+  });
+  const [images, setImages] = useState(Array(5).fill(null));
+  const fileInputRef = useRef(null);
+  const activeSlot = useRef(0);
+
+  const sym = product.price?.currency === 'USD' ? '$' : '₹';
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const formData = new FormData();
+      formData.append('title', form.title.trim());
+      formData.append('description', form.description.trim());
+      formData.append('priceAmount', form.priceAmount);
+      formData.append('priceCurrency', form.priceCurrency);
+      formData.append('stock', form.stock);
+      formData.append('color', form.color.trim());
+      formData.append('size', form.size.trim());
+      
+      const validImages = images.filter(Boolean).map(img => img.file);
+      validImages.forEach(img => formData.append('images', img));
+
+      await handleUpdateProduct(product._id, formData);
+      setIsEditing(false);
+      if (onRefresh) await onRefresh();
+    } catch (err) {
+      console.error('Error updating main product:', err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSlotClick = (idx) => {
+    activeSlot.current = idx;
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const preview = URL.createObjectURL(file);
+    const updated = [...images];
+    updated[activeSlot.current] = { file, preview };
+    setImages(updated);
+    e.target.value = '';
+  };
+
+  if (isEditing) {
+    return (
+      <div className="bg-[#181512] border-2 border-[#E8490F] rounded-2xl p-5 flex flex-col gap-4 relative">
+        <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
+        
+        <div className="flex items-center justify-between border-b border-[#E8490F]/30 pb-3">
+          <span className="text-[#E8490F] text-[12px] font-bold uppercase tracking-wider">Edit Main / Original Product</span>
+          <button
+            type="button"
+            onClick={() => setIsEditing(false)}
+            className="text-[#888] hover:text-white text-[12px] cursor-pointer bg-transparent border-none"
+          >
+            Cancel
+          </button>
+        </div>
+
+        {/* Title */}
+        <div className="flex flex-col gap-1">
+          <label className="text-[#bbb] text-[11px] font-semibold">Title</label>
+          <input
+            type="text"
+            value={form.title}
+            onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+            className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+          />
+        </div>
+
+        {/* Description */}
+        <div className="flex flex-col gap-1">
+          <label className="text-[#bbb] text-[11px] font-semibold">Description</label>
+          <textarea
+            value={form.description}
+            onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+            rows={3}
+            className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl p-3 text-white text-[13px] outline-none focus:border-[#E8490F] resize-none"
+          />
+        </div>
+
+        {/* Price, Stock, Currency row */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="flex flex-col gap-1">
+            <label className="text-[#bbb] text-[11px] font-semibold">Price Amount</label>
+            <input
+              type="number"
+              value={form.priceAmount}
+              onChange={e => setForm(f => ({ ...f, priceAmount: e.target.value }))}
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[#bbb] text-[11px] font-semibold">Currency</label>
+            <select
+              value={form.priceCurrency}
+              onChange={e => setForm(f => ({ ...f, priceCurrency: e.target.value }))}
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+            >
+              <option value="INR">INR (₹)</option>
+              <option value="USD">USD ($)</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[#bbb] text-[11px] font-semibold">Stock Quantity</label>
+            <input
+              type="number"
+              value={form.stock}
+              onChange={e => setForm(f => ({ ...f, stock: e.target.value }))}
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+            />
+          </div>
+        </div>
+
+        {/* Color & Size row */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-1">
+            <label className="text-[#bbb] text-[11px] font-semibold">Color</label>
+            <input
+              type="text"
+              value={form.color}
+              onChange={e => setForm(f => ({ ...f, color: e.target.value }))}
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[#bbb] text-[11px] font-semibold">Size</label>
+            <input
+              type="text"
+              value={form.size}
+              onChange={e => setForm(f => ({ ...f, size: e.target.value }))}
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+            />
+          </div>
+        </div>
+
+        {/* Upload replacement images */}
+        <div>
+          <label className="text-[#bbb] text-[11px] font-semibold mb-1 block">New Images (Optional)</label>
+          <div className="grid grid-cols-5 gap-2">
+            {images.map((imgObj, idx) => (
+              <ImageSlot
+                key={idx}
+                index={idx}
+                imageObj={imgObj}
+                onClick={() => handleSlotClick(idx)}
+                onRemove={(i) => {
+                  const updated = [...images];
+                  updated[i] = null;
+                  setImages(updated);
+                }}
+                isFirst={idx === 0}
+                hasError={false}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex justify-end gap-2 pt-2 border-t border-[#2a2a2a]">
+          <button
+            type="button"
+            onClick={() => setIsEditing(false)}
+            className="px-4 py-2 bg-[#222] hover:bg-[#333] rounded-xl text-[#ccc] text-[12px] font-semibold cursor-pointer border-none"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="px-5 py-2 bg-[#E8490F] hover:bg-[#c73a0a] rounded-xl text-white text-[12px] font-bold cursor-pointer border-none disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : 'Save Main Product'}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-[#1a1714] border-2 border-[#E8490F]/50 rounded-xl p-4 flex gap-4 relative overflow-hidden shadow-[0_4px_20px_rgba(232,73,15,0.08)]">
+      <div className="absolute top-0 right-0 flex items-center">
+        <button
+          type="button"
+          onClick={() => setIsEditing(true)}
+          className="bg-[#E8490F] hover:bg-[#c73a0a] text-white text-[10px] font-bold px-3 py-1.5 rounded-bl-xl tracking-wider uppercase transition-colors cursor-pointer border-none flex items-center gap-1.5 shadow-md"
+        >
+          <svg width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+          Edit Main Product
+        </button>
+      </div>
+
+      {/* Image */}
+      <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#111] shrink-0 flex items-center justify-center border border-[#E8490F]/30">
+        {product.images?.[0]?.url ? (
+          <img src={product.images[0].url} alt={product.title} className="w-full h-full object-cover" />
+        ) : (
+          <svg width="20" height="20" fill="none" stroke="#555" strokeWidth="1.5" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
+          </svg>
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="flex-1 min-w-0 pr-32">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[#E8490F] text-[10px] font-bold tracking-wide uppercase">★ ORIGINAL / MAIN PRODUCT</span>
+        </div>
+        <h4 className="text-white text-[14px] font-bold m-0 mb-1 truncate">{product.title}</h4>
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-white font-black text-[15px]">
+            {sym}{Number(product.price?.amount).toLocaleString('en-IN')}
+          </span>
+          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border
+            ${(product.stock ?? 0) > 0
+              ? 'bg-green-500/10 border-green-500/30 text-green-400'
+              : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
+            {(product.stock ?? 0) > 0 ? `${product.stock} in stock` : 'Out of stock'}
+          </span>
+        </div>
+
+        {/* Base attributes: Color, Size */}
+        <div className="flex flex-wrap gap-1.5">
+          {product.color && (
+            <span className="text-[10px] font-medium bg-[#2a1d17] border border-[#E8490F]/40 text-[#ffb094] px-2 py-0.5 rounded-lg">
+              <span className="text-[#888]">Color:</span> {product.color}
+            </span>
+          )}
+          {product.size && (
+            <span className="text-[10px] font-medium bg-[#2a1d17] border border-[#E8490F]/40 text-[#ffb094] px-2 py-0.5 rounded-lg">
+              <span className="text-[#888]">Size:</span> {product.size}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -668,7 +1201,7 @@ const SellerDetailedPage = () => {
               <div className="flex bg-[#161616] border border-[#1e1e1e] rounded-xl p-1 w-fit">
                 {[
                   { id: 'add', label: 'Add Variants', icon: 'M12 4v16m8-8H4' },
-                  { id: 'existing', label: `Existing (${existingVariants.length})`, icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
+                  { id: 'existing', label: `Existing (1 Base + ${existingVariants.length} Variant${existingVariants.length !== 1 ? 's' : ''})`, icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
                 ].map(tab => (
                   <button
                     key={tab.id}
@@ -691,31 +1224,20 @@ const SellerDetailedPage = () => {
               {/* ── Existing Variants Tab ── */}
               {activeTab === 'existing' && (
                 <div className="flex flex-col gap-3">
-                  {existingVariants.length === 0 ? (
-                    <div className="bg-[#161616] border border-[#1e1e1e] rounded-2xl p-10 flex flex-col items-center gap-3 text-center">
-                      <div className="w-14 h-14 rounded-2xl bg-[#1a1a1a] border border-[#252525] flex items-center justify-center">
-                        <svg width="24" height="24" fill="none" stroke="#444" strokeWidth="1.5" viewBox="0 0 24 24">
-                          <path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z" />
-                          <path d="M16 3l-4 4-4-4" />
-                        </svg>
-                      </div>
-                      <p className="text-white font-bold text-[15px] m-0">No variants yet</p>
-                      <p className="text-[#666] text-[12px] m-0 max-w-[280px]">
-                        This product has no variants. Switch to the "Add Variants" tab to create your first one.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab('add')}
-                        className="mt-2 px-5 py-2 bg-[#E8490F] rounded-xl text-white text-[12px] font-bold cursor-pointer border-none hover:bg-[#c73a0a] transition-colors"
-                      >
-                        Add First Variant
-                      </button>
+                  {/* Always display Original / Main product card at the top */}
+                  <BaseProductCard product={product} onRefresh={fetchProduct} />
+
+                  {existingVariants.length > 0 && (
+                    <div className="text-[#666] text-[10px] font-bold tracking-widest uppercase mt-2 mb-1 flex items-center gap-2">
+                      <div className="h-[1px] bg-[#222] flex-1" />
+                      <span>Additional Product Variants ({existingVariants.length})</span>
+                      <div className="h-[1px] bg-[#222] flex-1" />
                     </div>
-                  ) : (
-                    existingVariants.map((v, i) => (
-                      <ExistingVariantCard key={v._id || i} variant={v} index={i} />
-                    ))
                   )}
+
+                  {existingVariants.map((v, i) => (
+                    <ExistingVariantCard key={v._id || i} productId={product._id} variant={v} index={i} onRefresh={fetchProduct} />
+                  ))}
                 </div>
               )}
 
@@ -829,6 +1351,21 @@ const SellerDetailedPage = () => {
                     <span className="text-[#555] text-[10px]">{product.price?.currency}</span>
                   </div>
                   <p className="text-[11px] text-[#777] leading-relaxed m-0 line-clamp-3">{product.description}</p>
+
+                  <div className="pt-2 border-t border-[#1e1e1e] flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-[#666]">Base Color:</span>
+                      <span className="text-[#ccc] font-medium">{product.color || 'N/A'}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-[#666]">Base Size:</span>
+                      <span className="text-[#ccc] font-medium">{product.size || 'N/A'}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-[#666]">Base Stock:</span>
+                      <span className="text-green-400 font-semibold">{product.stock ?? 0}</span>
+                    </div>
+                  </div>
 
                   <div className="pt-2 border-t border-[#1e1e1e] flex items-center justify-between">
                     <span className="text-[10px] text-[#555]">

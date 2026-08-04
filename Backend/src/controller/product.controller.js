@@ -2,7 +2,7 @@ import productModel from "../models/product.model.js";
 import { uploadFile } from "../services/storage.service.js";
 
 export const createProduct = async (req,res) => {
-    const {title,description,priceAmount,priceCurrency} = req.body;
+    const {title,description,priceAmount,priceCurrency,stock,color,size} = req.body;
     const seller = req.user;
 
     //  upload file to server
@@ -23,10 +23,13 @@ export const createProduct = async (req,res) => {
             description,
             seller:seller._id,
             price:{
-                amount:priceAmount,
+                amount: Number(priceAmount),
                 currency:priceCurrency || "INR"
             },
-            images
+            images,
+            stock: Number(stock),
+            color,
+            size
         });
         
         return res.status(201).json({
@@ -155,3 +158,125 @@ export const createProductVariants = async(req,res) => {
     });
 
 }
+
+export const updateProduct = async (req, res) => {
+    const { productId } = req.params;
+    const seller = req.user;
+    const { title, description, priceAmount, priceCurrency, stock, color, size } = req.body;
+
+    try {
+        const product = await productModel.findOne({
+            _id: productId,
+            seller: seller._id
+        });
+        if (!product) {
+            return res.status(404).json({ message: "Product not found", success: false });
+        }
+
+        if (title !== undefined) product.title = title;
+        if (description !== undefined) product.description = description;
+        if (priceAmount !== undefined) {
+            product.price = {
+                amount: Number(priceAmount),
+                currency: priceCurrency || product.price?.currency || "INR"
+            };
+        }
+        if (stock !== undefined) product.stock = Number(stock);
+        if (color !== undefined) product.color = color;
+        if (size !== undefined) product.size = size;
+
+        if (req.files?.length) {
+            const newImages = await Promise.all(
+                req.files.map(async (file) => {
+                    const url = await uploadFile({
+                        buffer: file.buffer,
+                        fileName: file.originalname,
+                    });
+                    return { url };
+                })
+            );
+            product.images = newImages;
+        }
+
+        await product.save();
+        return res.status(200).json({ message: "Product updated successfully", product, success: true });
+    } catch (error) {
+        console.error("Error in updateProduct controller: ", error);
+        return res.status(500).json({ message: "Internal Server Error", success: false });
+    }
+};
+
+export const updateProductVariant = async (req, res) => {
+    const { productId, variantId } = req.params;
+    const seller = req.user;
+
+    try {
+        const product = await productModel.findOne({
+            _id: productId,
+            seller: seller._id
+        });
+        if (!product) {
+            return res.status(404).json({ message: "Product not found", success: false });
+        }
+
+        const variant = product.variants.id(variantId);
+        if (!variant) {
+            return res.status(404).json({ message: "Variant not found", success: false });
+        }
+
+        if (req.body.priceAmount !== undefined) {
+            variant.price = {
+                amount: Number(req.body.priceAmount),
+                currency: req.body.priceCurrency || variant.price?.currency || "INR"
+            };
+        }
+        if (req.body.stock !== undefined) {
+            variant.stock = Number(req.body.stock);
+        }
+        if (req.body.attributes) {
+            variant.attributes = JSON.parse(req.body.attributes);
+        }
+
+        if (req.files?.length) {
+            const newImages = await Promise.all(
+                req.files.map(async (file) => {
+                    const url = await uploadFile({
+                        buffer: file.buffer,
+                        fileName: file.originalname,
+                    });
+                    return { url };
+                })
+            );
+            variant.images = newImages;
+        }
+
+        await product.save();
+        return res.status(200).json({ message: "Variant updated successfully", product, success: true });
+    } catch (error) {
+        console.error("Error in updateProductVariant controller: ", error);
+        return res.status(500).json({ message: "Internal Server Error", success: false });
+    }
+};
+
+export const deleteProductVariant = async (req, res) => {
+    const { productId, variantId } = req.params;
+    const seller = req.user;
+
+    try {
+        const product = await productModel.findOne({
+            _id: productId,
+            seller: seller._id
+        });
+        if (!product) {
+            return res.status(404).json({ message: "Product not found", success: false });
+        }
+
+        product.variants.pull({ _id: variantId });
+        await product.save();
+
+        return res.status(200).json({ message: "Variant deleted successfully", product, success: true });
+    } catch (error) {
+        console.error("Error in deleteProductVariant controller: ", error);
+        return res.status(500).json({ message: "Internal Server Error", success: false });
+    }
+};
