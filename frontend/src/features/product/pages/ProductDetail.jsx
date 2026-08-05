@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProduct } from '../hook/useProduct';
+import { useCart } from '../../cart/hook/useCart.js';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const sym = (code) => ({ USD: '$', EUR: '€', GBP: '£' }[code] ?? 'INR ');
@@ -93,14 +94,17 @@ const LoadingSkeleton = () => (
 // ProductDetail
 // ═══════════════════════════════════════════════════════════════════════════════
 const ProductDetail = () => {
+
+
     const { productId } = useParams();
     const navigate = useNavigate();
     const { handleGetProductDetails } = useProduct();
+    const { handleAddItem } = useCart();
 
-    const [product, setProduct]           = useState(null);
-    const [loading, setLoading]           = useState(true);
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [activeImgIdx, setActiveImgIdx] = useState(0);
-    const [cartAdded, setCartAdded]       = useState(false);
+    const [cartAdded, setCartAdded] = useState(false);
 
     // Attribute selection state: e.g. { Color: 'BLACK', Size: 'LARGE' }
     const [sel, setSel] = useState({});
@@ -123,26 +127,7 @@ const ProductDetail = () => {
     // ── Variant Processing ──
     const variants = useMemo(() => {
         if (!product) return [];
-        const list = [];
-        const baseAttrs = {};
-        if (product.color) baseAttrs['Color'] = product.color;
-        if (product.size) baseAttrs['Size'] = product.size;
-
-        if (Object.keys(baseAttrs).length > 0 || product.price?.amount) {
-            list.push({
-                _id: 'base_product',
-                images: product.images || [],
-                price: product.price,
-                stock: product.stock,
-                attributes: baseAttrs,
-                isBase: true
-            });
-        }
-
-        if (product.variants?.length) {
-            list.push(...product.variants);
-        }
-        return list;
+        return product.variants || [];
     }, [product]);
 
     const attrKeys = useMemo(() => allAttrKeys(variants), [variants]);
@@ -172,6 +157,7 @@ const ProductDetail = () => {
         }
     }, [variants, attrKeys, attrVals]);
 
+
     // Match exact variant based on current selections
     const matchedVariant = useMemo(() => {
         const selectedEntries = Object.entries(sel).filter(([, v]) => !!v);
@@ -186,13 +172,13 @@ const ProductDetail = () => {
     // Fallback match if exact combination is not found (e.g. partial match on Color or Size)
     const partialVariant = useMemo(() => {
         if (matchedVariant || !variants.length) return null;
-        
+
         // Try matching by Color first, then by any selected attribute
         if (sel['Color']) {
             const colorMatch = variants.find(v => toPlainObj(v.attributes)['Color']?.toLowerCase() === sel['Color']?.toLowerCase());
             if (colorMatch) return colorMatch;
         }
-        
+
         const selectedEntries = Object.entries(sel).filter(([, v]) => !!v);
         if (selectedEntries.length > 0) {
             return variants.find(v => {
@@ -204,15 +190,18 @@ const ProductDetail = () => {
         return null;
     }, [matchedVariant, sel, variants]);
 
-    // Active Variant (Exact or Partial)
-    const activeVariant = matchedVariant || partialVariant;
+    // Active Variant (Exact, Partial, or First Variant)
+    const activeVariant = useMemo(() => {
+        if (!variants.length) return null;
+        return matchedVariant || partialVariant || variants[0] || null;
+    }, [matchedVariant, partialVariant, variants]);
 
     // ── FALLBACK LOGIC ──
     // 1. Display Images: Variant images -> Partial Variant images -> Main Product images
     const displayImages = useMemo(() => {
         if (matchedVariant?.images?.length > 0) return matchedVariant.images;
         if (partialVariant?.images?.length > 0) return partialVariant.images;
-        
+
         // If color selected, check any variant with that color for images
         if (sel['Color']) {
             const colorVar = variants.find(v => toPlainObj(v.attributes)['Color']?.toLowerCase() === sel['Color']?.toLowerCase() && v.images?.length > 0);
@@ -432,7 +421,7 @@ const ProductDetail = () => {
 
                     {/* ════ RIGHT COLUMN: Details & Variant Selectors ════ */}
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        
+
                         {/* Product Title */}
                         <h1 className="font-serif-title" style={{ fontSize: '38px', fontWeight: 400, color: '#ffffff', margin: '0 0 12px', lineHeight: 1.1, letterSpacing: '0.2px' }}>
                             {title}
@@ -494,8 +483,16 @@ const ProductDetail = () => {
                             {/* ADD TO CART */}
                             <button
                                 onClick={() => {
+                                    console.log("Product Details:", product);
+                                    console.log("Active Variant Details:", activeVariant);
+                                    console.log("Matched Variant Details:", matchedVariant);
                                     setCartAdded(true);
                                     setTimeout(() => setCartAdded(false), 2000);
+                                    handleAddItem({
+                                        productId: product._id,
+                                        variantId: activeVariant?._id || null,
+                                        quantity: 1
+                                    })
                                 }}
                                 disabled={displayStock <= 0}
                                 style={{
