@@ -3,15 +3,15 @@ import { useAuth } from '../hook/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const S = {
-    page:     { minHeight:'100vh', background:'#0d0d0d', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'16px', fontFamily:"'Inter', sans-serif" },
-    card:     { display:'flex', flexDirection:'row', width:'100%', maxWidth:'900px', minHeight:'600px', borderRadius:'18px', overflow:'hidden', boxShadow:'0 32px 80px rgba(0,0,0,0.85)', border:'1px solid rgba(232,73,15,0.12)' },
+    page:     { minHeight:'100vh', background:'#f8f9fa', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'16px', fontFamily:"'Inter', sans-serif" },
+    card:     { display:'flex', flexDirection:'row', width:'100%', maxWidth:'900px', minHeight:'600px', borderRadius:'18px', overflow:'hidden', boxShadow:'0 20px 60px rgba(0,0,0,0.06)', border:'1px solid #e5e7eb', background:'#ffffff' },
     left:     { width:'42%', position:'relative', display:'flex', flexDirection:'column', overflow:'hidden', flexShrink:0 },
-    right:    { flex:1, background:'#111111', borderLeft:'1px solid rgba(232,73,15,0.10)', padding:'32px 38px', display:'flex', flexDirection:'column', overflowY:'auto', position:'relative' },
-    overlay:  { position:'absolute', inset:0, background:'linear-gradient(to top, rgba(13,13,13,0.97) 0%, rgba(13,13,13,0.75) 50%, rgba(13,13,13,0.38) 100%)', zIndex:1 },
+    right:    { flex:1, background:'#ffffff', borderLeft:'1px solid #f0f0f0', padding:'32px 38px', display:'flex', flexDirection:'column', overflowY:'auto', position:'relative' },
+    overlay:  { position:'absolute', inset:0, background:'linear-gradient(to top, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.75) 50%, rgba(255,255,255,0.30) 100%)', zIndex:1 },
     content:  { position:'relative', zIndex:2, display:'flex', flexDirection:'column', height:'100%', padding:'28px' },
-    inputWrap:{ display:'flex', alignItems:'center', background:'rgba(255,255,255,0.04)', border:'1px solid #2a2a2a', borderRadius:'10px', padding:'0 14px', height:'46px', transition:'border-color 0.2s, box-shadow 0.2s' },
-    input:    { flex:1, background:'transparent', border:'none', outline:'none', color:'#ffffff', fontSize:'13px', fontFamily:"'Inter', sans-serif" },
-    label:    { color:'#bbbbbb', fontSize:'11.5px', fontWeight:600, letterSpacing:'0.5px', marginBottom:'7px', display:'block' },
+    inputWrap:{ display:'flex', alignItems:'center', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:'10px', padding:'0 14px', height:'46px', transition:'border-color 0.2s, box-shadow 0.2s' },
+    input:    { flex:1, background:'transparent', border:'none', outline:'none', color:'#111827', fontSize:'13px', fontFamily:"'Inter', sans-serif" },
+    label:    { color:'#374151', fontSize:'11.5px', fontWeight:600, letterSpacing:'0.5px', marginBottom:'7px', display:'block' },
 };
 
 const Register = () => {
@@ -37,7 +37,7 @@ const Register = () => {
         }
     };
 
-    const focusBorder = { borderColor:'#E8490F', boxShadow:'0 0 0 2px rgba(232,73,15,0.12)' };
+    const focusBorder = { borderColor:'#CA2945', boxShadow:'0 0 0 2px rgba(202,41,69,0.12)' };
 
     const fields = [
         { key:'fullname', label:'Full Name',       type:'text',     placeholder:'Enter your full name',       icon:<><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></> },
@@ -55,30 +55,30 @@ const Register = () => {
                     <div style={S.overlay} />
                     <div style={S.content}>
                         <div style={{ marginBottom:'auto' }}>
-                            <div style={{ fontSize:'24px', fontWeight:900, color:'#E8490F', letterSpacing:'3px', lineHeight:1.1 }}>VASTRA</div>
-                            <div style={{ fontSize:'20px', fontWeight:900, color:'#E8490F', letterSpacing:'2px' }}>BHANDAR</div>
-                            <div style={{ fontSize:'8px', color:'rgba(255,255,255,0.35)', letterSpacing:'3px', marginTop:'5px', fontWeight:600 }}>WEAR YOUR IDENTITY</div>
+                            <div style={{ fontSize:'24px', fontWeight:900, color:'#CA2945', letterSpacing:'3px', lineHeight:1.1 }}>VASTRA</div>
+                            <div style={{ fontSize:'20px', fontWeight:900, color:'#CA2945', letterSpacing:'2px' }}>BHANDAR</div>
+                            <div style={{ fontSize:'8px', color:'#4b5563', letterSpacing:'3px', marginTop:'5px', fontWeight:600 }}>WEAR YOUR IDENTITY</div>
                         </div>
 
                         <div>
-                            <h2 style={{ fontSize:'40px', fontWeight:900, color:'rgba(255,255,255,0.92)', letterSpacing:'2px', margin:'0', lineHeight:1, fontFamily:"'Inter', sans-serif" }}>JOIN THE</h2>
-                            <h2 style={{ fontSize:'48px', fontWeight:900, color:'#E8490F', letterSpacing:'2px', margin:'4px 0 24px', lineHeight:1, textShadow:'0 0 40px rgba(232,73,15,0.50)', fontFamily:"'Inter', sans-serif" }}>CULTURE</h2>
-                            <p style={{ fontStyle:'italic', color:'rgba(255,255,255,0.45)', fontSize:'14px', lineHeight:1.7, margin:0 }}>
+                            <h2 style={{ fontSize:'40px', fontWeight:900, color:'#111827', letterSpacing:'2px', margin:'0', lineHeight:1, fontFamily:"'Inter', sans-serif" }}>JOIN THE</h2>
+                            <h2 style={{ fontSize:'48px', fontWeight:900, color:'#CA2945', letterSpacing:'2px', margin:'4px 0 24px', lineHeight:1, fontFamily:"'Inter', sans-serif" }}>CULTURE</h2>
+                            <p style={{ fontStyle:'italic', color:'#4b5563', fontSize:'14px', lineHeight:1.7, margin:0 }}>
                                 Join thousands of style-forward<br />shoppers and sellers.
                             </p>
                         </div>
 
-                        <div style={{ display:'flex', justifyContent:'space-around', paddingTop:'20px', borderTop:'1px solid rgba(255,255,255,0.08)', marginTop:'28px' }}>
+                        <div style={{ display:'flex', justifyContent:'space-around', paddingTop:'20px', borderTop:'1px solid rgba(0,0,0,0.08)', marginTop:'28px' }}>
                             {[
                                 { label:'PREMIUM\nQUALITY' },
                                 { label:'EASY\nRETURNS' },
                                 { label:'FAST\nDELIVERY' },
                             ].map(({ label }) => (
                                 <div key={label} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'6px' }}>
-                                    <div style={{ width:'34px', height:'34px', borderRadius:'8px', border:'1px solid rgba(232,73,15,0.25)', background:'rgba(232,73,15,0.06)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                                        <div style={{ width:'8px', height:'8px', background:'#E8490F', borderRadius:'2px', transform:'rotate(45deg)' }} />
+                                    <div style={{ width:'34px', height:'34px', borderRadius:'8px', border:'1px solid rgba(202,41,69,0.25)', background:'rgba(202,41,69,0.06)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                                        <div style={{ width:'8px', height:'8px', background:'#CA2945', borderRadius:'2px', transform:'rotate(45deg)' }} />
                                     </div>
-                                    <span style={{ fontSize:'7.5px', color:'rgba(255,255,255,0.40)', letterSpacing:'1.5px', textAlign:'center', whiteSpace:'pre-line', fontWeight:700 }}>{label}</span>
+                                    <span style={{ fontSize:'7.5px', color:'#6b7280', letterSpacing:'1.5px', textAlign:'center', whiteSpace:'pre-line', fontWeight:700 }}>{label}</span>
                                 </div>
                             ))}
                         </div>
@@ -92,10 +92,10 @@ const Register = () => {
                         <img src="/favicon.png" alt="VB" style={{ width:'38px', height:'38px', objectFit:'contain', opacity:0.85 }} />
                     </div>
 
-                    <h1 style={{ fontSize:'24px', fontWeight:900, color:'#ffffff', margin:'0 0 4px', fontFamily:"'Inter', sans-serif" }}>
-                        Create Your <span style={{ color:'#E8490F' }}>Style</span> Account
+                    <h1 style={{ fontSize:'24px', fontWeight:900, color:'#111827', margin:'0 0 4px', fontFamily:"'Inter', sans-serif" }}>
+                        Create Your <span style={{ color:'#CA2945' }}>Style</span> Account
                     </h1>
-                    <p style={{ color:'rgba(255,255,255,0.35)', fontSize:'12px', margin:'0 0 22px', lineHeight:1.5 }}>
+                    <p style={{ color:'#6b7280', fontSize:'12px', margin:'0 0 22px', lineHeight:1.5 }}>
                         Start your style journey with Vastra Bhandar.
                     </p>
 
@@ -106,7 +106,7 @@ const Register = () => {
                             <div key={key}>
                                 <label style={S.label}>{label}</label>
                                 <div style={{ ...S.inputWrap, ...(focusField === key ? focusBorder : {}) }}>
-                                    <svg width="15" height="15" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.8" viewBox="0 0 24 24" style={{ marginRight:'10px', flexShrink:0 }}>{icon}</svg>
+                                    <svg width="15" height="15" fill="none" stroke="#9ca3af" strokeWidth="1.8" viewBox="0 0 24 24" style={{ marginRight:'10px', flexShrink:0 }}>{icon}</svg>
                                     <input style={S.input} type={type} name={key} placeholder={placeholder}
                                         value={form[key]} onChange={handleChange}
                                         onFocus={() => setFocusField(key)} onBlur={() => setFocusField(null)} required />
@@ -118,14 +118,14 @@ const Register = () => {
                         <div>
                             <label style={S.label}>Password</label>
                             <div style={{ ...S.inputWrap, ...(focusField === 'password' ? focusBorder : {}) }}>
-                                <svg width="15" height="15" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.8" viewBox="0 0 24 24" style={{ marginRight:'10px', flexShrink:0 }}>
+                                <svg width="15" height="15" fill="none" stroke="#9ca3af" strokeWidth="1.8" viewBox="0 0 24 24" style={{ marginRight:'10px', flexShrink:0 }}>
                                     <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                                 </svg>
                                 <input style={S.input} type={showPass ? 'text' : 'password'} name="password" placeholder="Create a password"
                                     value={form.password} onChange={handleChange}
                                     onFocus={() => setFocusField('password')} onBlur={() => setFocusField(null)} required />
                                 <button type="button" onClick={() => setShowPass(v => !v)}
-                                    style={{ background:'none', border:'none', cursor:'pointer', padding:'4px', color:'rgba(255,255,255,0.30)', display:'flex' }}>
+                                    style={{ background:'none', border:'none', cursor:'pointer', padding:'4px', color:'#9ca3af', display:'flex' }}>
                                     <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                                         {showPass
                                             ? <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>
@@ -144,7 +144,7 @@ const Register = () => {
                                     const active = form.isSeller === val;
                                     return (
                                         <button key={id} id={id} type="button" onClick={() => handleRole(val)}
-                                            style={{ flex:1, height:'42px', borderRadius:'10px', border:`1.5px solid ${active ? '#E8490F' : '#2a2a2a'}`, background: active ? 'rgba(232,73,15,0.12)' : 'rgba(255,255,255,0.03)', color: active ? '#E8490F' : 'rgba(255,255,255,0.40)', fontSize:'13px', fontWeight:700, fontFamily:"'Inter', sans-serif", cursor:'pointer', transition:'all 0.2s', boxShadow: active ? '0 0 16px rgba(232,73,15,0.15)' : 'none' }}>
+                                            style={{ flex:1, height:'42px', borderRadius:'10px', border:`1.5px solid ${active ? '#CA2945' : '#e5e7eb'}`, background: active ? 'rgba(202,41,69,0.08)' : '#f9fafb', color: active ? '#CA2945' : '#4b5563', fontSize:'13px', fontWeight:700, fontFamily:"'Inter', sans-serif", cursor:'pointer', transition:'all 0.2s' }}>
                                             {label}
                                         </button>
                                     );
@@ -154,7 +154,7 @@ const Register = () => {
 
                         {/* Google */}
                         <a href="http://localhost:3000/api/auth/google" style={{ display:'block', textDecoration:'none' }}>
-                            <button type="button" style={{ width:'100%', height:'44px', background:'rgba(255,255,255,0.97)', border:'none', borderRadius:'10px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', fontSize:'13px', fontWeight:700, color:'#222', fontFamily:"'Inter', sans-serif" }}>
+                            <button type="button" style={{ width:'100%', height:'44px', background:'#ffffff', border:'1px solid #e5e7eb', borderRadius:'10px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', fontSize:'13px', fontWeight:700, color:'#374151', fontFamily:"'Inter', sans-serif" }}>
                                 <svg style={{ width:'18px', height:'18px' }} viewBox="0 0 48 48">
                                     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
                                     <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -167,23 +167,23 @@ const Register = () => {
 
                         {/* Submit */}
                         <button id="register-submit" type="submit"
-                            style={{ height:'46px', background:'#E8490F', border:'none', borderRadius:'10px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', fontSize:'13px', fontWeight:700, color:'#fff', fontFamily:"'Inter', sans-serif", transition:'all 0.2s', boxShadow:'0 8px 24px rgba(232,73,15,0.30)' }}
-                            onMouseEnter={e => { e.currentTarget.style.background='#c73a0a'; e.currentTarget.style.transform='translateY(-1px)'; }}
-                            onMouseLeave={e => { e.currentTarget.style.background='#E8490F'; e.currentTarget.style.transform='translateY(0)'; }}>
+                            style={{ height:'46px', background:'#CA2945', border:'none', borderRadius:'10px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', fontSize:'13px', fontWeight:700, color:'#fff', fontFamily:"'Inter', sans-serif", transition:'all 0.2s', boxShadow:'0 8px 24px rgba(202,41,69,0.25)' }}
+                            onMouseEnter={e => { e.currentTarget.style.background='#b0203a'; e.currentTarget.style.transform='translateY(-1px)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.background='#CA2945'; e.currentTarget.style.transform='translateY(0)'; }}>
                             Register →
                         </button>
                     </form>
 
-                    <p style={{ textAlign:'center', color:'rgba(255,255,255,0.35)', fontSize:'12px', marginTop:'18px' }}>
+                    <p style={{ textAlign:'center', color:'#6b7280', fontSize:'12px', marginTop:'18px' }}>
                         Already have an account?{' '}
-                        <a href="/login" style={{ color:'#E8490F', fontWeight:700, textDecoration:'none' }}>
+                        <a href="/login" style={{ color:'#CA2945', fontWeight:700, textDecoration:'none' }}>
                             Sign In
                         </a>
                     </p>
 
-                    <div style={{ marginTop:'auto', paddingTop:'18px', borderTop:'1px solid rgba(255,255,255,0.06)', textAlign:'center' }}>
-                        <div style={{ fontSize:'10px', letterSpacing:'3px', color:'rgba(255,255,255,0.20)', fontWeight:700 }}>VASTRA <span style={{ color:'#E8490F' }}>BHANDAR</span></div>
-                        <div style={{ fontSize:'9px', letterSpacing:'1.5px', color:'rgba(255,255,255,0.12)', marginTop:'4px' }}>STYLE IS NOT BOUGHT, IT'S OWNED.</div>
+                    <div style={{ marginTop:'auto', paddingTop:'18px', borderTop:'1px solid #f0f0f0', textAlign:'center' }}>
+                        <div style={{ fontSize:'10px', letterSpacing:'3px', color:'#9ca3af', fontWeight:700 }}>VASTRA <span style={{ color:'#CA2945' }}>BHANDAR</span></div>
+                        <div style={{ fontSize:'9px', letterSpacing:'1.5px', color:'#9ca3af', marginTop:'4px' }}>STYLE IS NOT BOUGHT, IT'S OWNED.</div>
                     </div>
                 </div>
             </div>

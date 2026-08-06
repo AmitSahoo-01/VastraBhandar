@@ -40,23 +40,36 @@ export const addToCart = async (req, res) => {
         const cart = (await cartModel.findOne({ user: userId })) || await cartModel.create({ user: userId });
 
         const existingItem = cart.items.find(item => {
-            const isSameProduct = item.product.toString() === productId;
-            const isSameVariant = variantId
-                ? item.variant?.toString() === variantId
+            const isSameProduct = item.product ? item.product.toString() === productId.toString() : false;
+            const isSameVariant = (variantId && variantId !== "null" && variantId !== "undefined")
+                ? (item.variant ? item.variant.toString() === variantId.toString() : false)
                 : !item.variant;
             return isSameProduct && isSameVariant;
         });
 
         if (existingItem) {
-            if (existingItem.quantity + quantity > availableStock) {
+            const newQuantity = existingItem.quantity + quantity;
+            if (newQuantity <= 0) {
+                cart.items = cart.items.filter(item => item._id.toString() !== existingItem._id.toString());
+                await cart.save();
+                await cart.populate("items.product");
+                return res.status(200).json({
+                    success: true,
+                    message: "Item removed from cart",
+                    items: cart.items
+                });
+            }
+
+            if (newQuantity > availableStock) {
                 return res.status(400).json({
                     success: false,
                     message: `Stock limit exceeded. Only ${availableStock} item(s) available.`
                 });
             }
 
-            existingItem.quantity += quantity;
+            existingItem.quantity = newQuantity;
             await cart.save();
+            await cart.populate("items.product");
 
             return res.status(200).json({
                 success: true,
@@ -74,13 +87,14 @@ export const addToCart = async (req, res) => {
 
         const newItem = {
             product: productId,
-            variant: variantId || null,
+            variant: (variantId && variantId !== "null" && variantId !== "undefined") ? variantId : null,
             quantity,
             price: stockObj.price
         };
 
         cart.items.push(newItem);
         await cart.save();
+        await cart.populate("items.product");
 
         return res.status(200).json({
             success: true,

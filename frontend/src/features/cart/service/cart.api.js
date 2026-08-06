@@ -19,12 +19,12 @@ export const addItem = async ({ productId, variantId, quantity = 1 }) => {
     }
 };
 
-// export const getCart = async () => {
-//     try{
-//         const response = await cartApi.get("/");
-//         return response.data;
-//     }catch(error){
-//         console.log("Error occur in fetching the cart :",error);
-//         return error.response.data;
-//     }
-// };
+export const getCart = async () => {
+    try{
+        const response = await cartApi.get("/");
+        return response.data;
+    }catch(error){
+        console.log("Error occur in fetching the cart :",error);
+        return error.response.data;
+    }
+};

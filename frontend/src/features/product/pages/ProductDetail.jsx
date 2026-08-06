@@ -269,9 +269,9 @@ const ProductDetail = () => {
 
     if (!product) {
         return (
-            <div style={{ minHeight: '100vh', background: '#0d0d0d', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, fontFamily: "'Inter', sans-serif" }}>
-                <p style={{ color: '#fff', fontSize: 18, fontWeight: 700 }}>Product not found</p>
-                <button onClick={() => navigate('/')} style={{ padding: '10px 24px', background: '#E8490F', border: 'none', borderRadius: 10, color: '#fff', fontWeight: 700, cursor: 'pointer' }}>← Back to Shop</button>
+            <div style={{ minHeight: '100vh', background: '#ffffff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, fontFamily: "'Inter', sans-serif" }}>
+                <p style={{ color: '#111827', fontSize: 18, fontWeight: 700 }}>Product not found</p>
+                <button onClick={() => navigate('/')} style={{ padding: '10px 24px', background: '#CA2945', border: 'none', borderRadius: 10, color: '#fff', fontWeight: 700, cursor: 'pointer' }}>← Back to Shop</button>
             </div>
         );
     }
@@ -280,7 +280,7 @@ const ProductDetail = () => {
     const currentImgUrl = displayImages[activeImgIdx]?.url || displayImages[0]?.url;
 
     return (
-        <div style={{ minHeight: '100vh', background: '#0d0d0d', color: '#ffffff', fontFamily: "'Inter', sans-serif" }}>
+        <div style={{ minHeight: '100vh', background: '#ffffff', color: '#111827', fontFamily: "'Inter', sans-serif" }}>
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
                 
@@ -298,33 +298,33 @@ const ProductDetail = () => {
                 }
 
                 .attr-btn {
-                    background: #141414;
-                    border: 1px solid #2a2a2a;
-                    color: #999999;
+                    background: #f9fafb;
+                    border: 1px solid #e5e7eb;
+                    color: #374151;
                     font-weight: 700;
                     font-size: 11px;
                     letter-spacing: 1.5px;
                     padding: 10px 20px;
-                    border-radius: 4px;
+                    border-radius: 6px;
                     cursor: pointer;
                     transition: all 0.2s ease;
                     text-transform: uppercase;
                 }
 
                 .attr-btn:hover:not(:disabled) {
-                    border-color: #666666;
-                    color: #ffffff;
+                    border-color: #CA2945;
+                    color: #CA2945;
                 }
 
                 .attr-btn.active {
-                    background: #ffffff !important;
-                    color: #000000 !important;
-                    border-color: #ffffff !important;
-                    box-shadow: 0 4px 16px rgba(255,255,255,0.12);
+                    background: #CA2945 !important;
+                    color: #ffffff !important;
+                    border-color: #CA2945 !important;
+                    box-shadow: 0 4px 16px rgba(202,41,69,0.25);
                 }
 
                 .attr-btn:disabled {
-                    opacity: 0.3;
+                    opacity: 0.35;
                     cursor: not-allowed;
                     text-decoration: line-through;
                 }
@@ -334,50 +334,24 @@ const ProductDetail = () => {
                     height: 90px;
                     border-radius: 6px;
                     overflow: hidden;
-                    border: 1px solid #242424;
+                    border: 1px solid #e5e7eb;
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    background: #141414;
+                    background: #f8f9fa;
                     flex-shrink: 0;
                 }
 
                 .thumb-box:hover {
-                    border-color: #555555;
+                    border-color: #CA2945;
                 }
 
                 .thumb-box.active {
-                    border-color: #ffffff;
-                    box-shadow: 0 0 0 1px #ffffff;
-                }
-
-                .buy-btn-solid {
-                    background: #000000;
-                    color: #ffffff;
-                    border: 1px solid #333333;
-                }
-                .buy-btn-solid:hover:not(:disabled) {
-                    background: #ffffff;
-                    color: #000000;
-                    border-color: #ffffff;
+                    border-color: #CA2945;
+                    box-shadow: 0 0 0 1px #CA2945;
                 }
             `}</style>
 
-            {/* ── Top Header ── */}
-            <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(13,13,13,0.92)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #1c1c1c', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 36px' }}>
-                <button
-                    onClick={() => navigate('/')}
-                    style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', cursor: 'pointer', color: '#888', fontSize: '13px', fontWeight: 600, padding: 0 }}
-                    onMouseEnter={e => e.currentTarget.style.color = '#E8490F'}
-                    onMouseLeave={e => e.currentTarget.style.color = '#888'}
-                >
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
-                    Back to Store
-                </button>
-                <div style={{ fontSize: '16px', fontWeight: 900, letterSpacing: '3px' }}>
-                    VASTRA <span style={{ color: '#E8490F' }}>BHANDAR</span>
-                </div>
-                <div style={{ width: 100 }} />
-            </header>
+            {/* ── Main Layout ── */}
 
             {/* ── Main Layout ── */}
             <main style={{ maxWidth: '1160px', margin: '0 auto', padding: '48px 24px 100px' }}>
@@ -428,7 +402,7 @@ const ProductDetail = () => {
                         </h1>
 
                         {/* Price */}
-                        <div style={{ fontSize: '14px', fontWeight: 700, color: '#b0b0b0', margin: '0 0 28px', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#CA2945', margin: '0 0 28px', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
                             {fmtPrice(displayPrice)}
                         </div>
 
@@ -437,7 +411,7 @@ const ProductDetail = () => {
                             const values = attrVals[key] || [];
                             return (
                                 <div key={key} style={{ marginBottom: '24px' }}>
-                                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#777777', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px' }}>
+                                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#6b7280', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px' }}>
                                         {key}
                                     </div>
                                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
@@ -462,17 +436,17 @@ const ProductDetail = () => {
                         })}
 
                         {/* Stock Count Indicator */}
-                        <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '2px', color: displayStock > 0 ? '#00FF66' : '#ef4444', textTransform: 'uppercase', marginBottom: '24px' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '2px', color: displayStock > 0 ? '#16a34a' : '#ef4444', textTransform: 'uppercase', marginBottom: '24px' }}>
                             {displayStock > 0 ? `${displayStock} IN STOCK` : 'OUT OF STOCK'}
                         </div>
 
                         {/* Product / Variant Description */}
                         {displayDescription && (
                             <div style={{ marginBottom: '32px' }}>
-                                <div style={{ fontSize: '10px', fontWeight: 800, color: '#666666', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>
+                                <div style={{ fontSize: '10px', fontWeight: 800, color: '#9ca3af', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>
                                     THE DETAILS
                                 </div>
-                                <div style={{ fontSize: '13px', color: '#999999', lineHeight: 1.7, fontWeight: 400 }}>
+                                <div style={{ fontSize: '13px', color: '#4b5563', lineHeight: 1.7, fontWeight: 400 }}>
                                     {displayDescription}
                                 </div>
                             </div>
@@ -498,27 +472,26 @@ const ProductDetail = () => {
                                 style={{
                                     width: '100%',
                                     height: '52px',
-                                    background: cartAdded ? '#22c55e' : displayStock <= 0 ? '#1f1f1f' : '#141414',
-                                    color: cartAdded ? '#ffffff' : displayStock <= 0 ? '#555555' : '#ffffff',
-                                    border: '1px solid #2c2c2c',
-                                    borderRadius: '4px',
+                                    background: cartAdded ? '#16a34a' : displayStock <= 0 ? '#e5e7eb' : '#CA2945',
+                                    color: cartAdded ? '#ffffff' : displayStock <= 0 ? '#9ca3af' : '#ffffff',
+                                    border: 'none',
+                                    borderRadius: '6px',
                                     fontSize: '12px',
                                     fontWeight: 800,
                                     letterSpacing: '2px',
                                     textTransform: 'uppercase',
                                     cursor: displayStock <= 0 ? 'not-allowed' : 'pointer',
                                     transition: 'all 0.2s ease',
+                                    boxShadow: displayStock > 0 ? '0 8px 24px rgba(202,41,69,0.25)' : 'none',
                                 }}
                                 onMouseEnter={e => {
                                     if (displayStock > 0 && !cartAdded) {
-                                        e.currentTarget.style.background = '#222222';
-                                        e.currentTarget.style.borderColor = '#444444';
+                                        e.currentTarget.style.background = '#b0203a';
                                     }
                                 }}
                                 onMouseLeave={e => {
                                     if (displayStock > 0 && !cartAdded) {
-                                        e.currentTarget.style.background = '#141414';
-                                        e.currentTarget.style.borderColor = '#2c2c2c';
+                                        e.currentTarget.style.background = '#CA2945';
                                     }
                                 }}
                             >
@@ -532,9 +505,9 @@ const ProductDetail = () => {
                                     width: '100%',
                                     height: '52px',
                                     background: 'transparent',
-                                    color: displayStock <= 0 ? '#444444' : '#ffffff',
-                                    border: `1px solid ${displayStock <= 0 ? '#222222' : '#ffffff'}`,
-                                    borderRadius: '4px',
+                                    color: displayStock <= 0 ? '#9ca3af' : '#111827',
+                                    border: `1.5px solid ${displayStock <= 0 ? '#e5e7eb' : '#111827'}`,
+                                    borderRadius: '6px',
                                     fontSize: '12px',
                                     fontWeight: 800,
                                     letterSpacing: '2px',
@@ -544,14 +517,14 @@ const ProductDetail = () => {
                                 }}
                                 onMouseEnter={e => {
                                     if (displayStock > 0) {
-                                        e.currentTarget.style.background = '#ffffff';
-                                        e.currentTarget.style.color = '#000000';
+                                        e.currentTarget.style.background = '#111827';
+                                        e.currentTarget.style.color = '#ffffff';
                                     }
                                 }}
                                 onMouseLeave={e => {
                                     if (displayStock > 0) {
                                         e.currentTarget.style.background = 'transparent';
-                                        e.currentTarget.style.color = '#ffffff';
+                                        e.currentTarget.style.color = '#111827';
                                     }
                                 }}
                             >
@@ -562,12 +535,12 @@ const ProductDetail = () => {
                     </div>
                 </div>
 
-                {/* ── Features Bar in 1 Horizontal Line at the end (Matching Reference Image) ── */}
-                <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: '36px', marginTop: '64px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' }}>
+                {/* ── Features Bar ── */}
+                <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '36px', marginTop: '64px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' }}>
                     {/* Column 1: SHIPPING */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderRight: '1px solid #1a1a1a', paddingRight: '24px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderRight: '1px solid #e5e7eb', paddingRight: '24px' }}>
                         <div style={{ flexShrink: 0 }}>
-                            <svg width="32" height="32" fill="none" stroke="#ffffff" strokeWidth="1.4" viewBox="0 0 24 24">
+                            <svg width="32" height="32" fill="none" stroke="#111827" strokeWidth="1.4" viewBox="0 0 24 24">
                                 <rect x="1" y="3" width="15" height="13" rx="1" />
                                 <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
                                 <circle cx="5.5" cy="18.5" r="2.5" />
@@ -575,36 +548,36 @@ const ProductDetail = () => {
                             </svg>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '2px', color: '#888888', textTransform: 'uppercase' }}>SHIPPING</span>
-                            <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '1px', color: '#888888', textTransform: 'uppercase' }}>COMPLIMENTARY OVER INR 15,000</span>
+                            <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '2px', color: '#111827', textTransform: 'uppercase' }}>SHIPPING</span>
+                            <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '1px', color: '#6b7280', textTransform: 'uppercase' }}>COMPLIMENTARY OVER INR 15,000</span>
                         </div>
                     </div>
 
                     {/* Column 2: RETURNS */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderRight: '1px solid #1a1a1a', paddingRight: '24px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', borderRight: '1px solid #e5e7eb', paddingRight: '24px' }}>
                         <div style={{ flexShrink: 0 }}>
-                            <svg width="32" height="32" fill="none" stroke="#ffffff" strokeWidth="1.4" viewBox="0 0 24 24">
+                            <svg width="32" height="32" fill="none" stroke="#111827" strokeWidth="1.4" viewBox="0 0 24 24">
                                 <polyline points="1 4 1 10 7 10" />
                                 <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
                             </svg>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '2px', color: '#888888', textTransform: 'uppercase' }}>RETURNS</span>
-                            <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '1px', color: '#888888', textTransform: 'uppercase' }}>WITHIN 14 DAYS OF DELIVERY</span>
+                            <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '2px', color: '#111827', textTransform: 'uppercase' }}>RETURNS</span>
+                            <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '1px', color: '#6b7280', textTransform: 'uppercase' }}>WITHIN 14 DAYS OF DELIVERY</span>
                         </div>
                     </div>
 
                     {/* Column 3: AUTHENTICITY */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                         <div style={{ flexShrink: 0 }}>
-                            <svg width="32" height="32" fill="none" stroke="#ffffff" strokeWidth="1.4" viewBox="0 0 24 24">
+                            <svg width="32" height="32" fill="none" stroke="#111827" strokeWidth="1.4" viewBox="0 0 24 24">
                                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                                 <polyline points="9 12 11 14 15 10" />
                             </svg>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '2px', color: '#888888', textTransform: 'uppercase' }}>AUTHENTICITY</span>
-                            <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '1px', color: '#888888', textTransform: 'uppercase' }}>100% GUARANTEED AUTHENTIC</span>
+                            <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '2px', color: '#111827', textTransform: 'uppercase' }}>AUTHENTICITY</span>
+                            <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '1px', color: '#6b7280', textTransform: 'uppercase' }}>100% GUARANTEED AUTHENTIC</span>
                         </div>
                     </div>
                 </div>

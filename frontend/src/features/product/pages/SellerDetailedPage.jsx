@@ -33,7 +33,7 @@ const ImageSlot = ({ index, imageObj, onClick, onRemove, isFirst, hasError }) =>
         ${isFirst
           ? hasError
             ? 'border-red-500 bg-[#1a0a0a]'
-            : 'border-[#E8490F] bg-[#1a0d08]'
+            : 'border-[#CA2945] bg-[#1a0d08]'
           : 'border-[#2a2a2a] bg-[#161616] hover:border-[#444]'
         }`}
     >
@@ -53,11 +53,11 @@ const ImageSlot = ({ index, imageObj, onClick, onRemove, isFirst, hasError }) =>
         </>
       ) : isFirst ? (
         <>
-          <svg width="20" height="20" fill="none" stroke={hasError ? '#ef4444' : '#E8490F'} strokeWidth="2" viewBox="0 0 24 24" className="mb-1">
+          <svg width="20" height="20" fill="none" stroke={hasError ? '#ef4444' : '#CA2945'} strokeWidth="2" viewBox="0 0 24 24" className="mb-1">
             <polyline points="16 16 12 12 8 16" /><line x1="12" y1="12" x2="12" y2="21" />
             <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
           </svg>
-          <span className={`text-[9px] font-semibold tracking-wide ${hasError ? 'text-red-400' : 'text-[#E8490F]'}`}>Upload</span>
+          <span className={`text-[9px] font-semibold tracking-wide ${hasError ? 'text-red-400' : 'text-[#CA2945]'}`}>Upload</span>
         </>
       ) : (
         <>
@@ -112,13 +112,13 @@ const CurrencyDropdown = ({ value, onChange }) => {
               type="button"
               onClick={() => { onChange(c.code); setOpen(false); }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 transition-colors text-left
-                ${c.code === value ? 'bg-[#E8490F]/15 text-white' : 'text-[#ccc] hover:bg-white/5 hover:text-white'}`}
+                ${c.code === value ? 'bg-[#CA2945]/15 text-white' : 'text-[#ccc] hover:bg-white/5 hover:text-white'}`}
             >
               <span className="text-[16px]">{c.flag}</span>
               <span className="text-[12px] font-semibold flex-1">{c.code}</span>
               <span className="text-[12px] text-[#888]">{c.symbol}</span>
               {c.code === value && (
-                <svg width="12" height="12" fill="none" stroke="#E8490F" strokeWidth="2.5" viewBox="0 0 24 24">
+                <svg width="12" height="12" fill="none" stroke="#CA2945" strokeWidth="2.5" viewBox="0 0 24 24">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               )}
@@ -177,8 +177,8 @@ const VariantFormCard = ({ variantIndex, variant, onChange, onRemove, onImageCli
       {/* Card Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e1e1e]">
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-lg bg-[#E8490F]/15 border border-[#E8490F]/30 flex items-center justify-center">
-            <span className="text-[#E8490F] text-[11px] font-bold">{variantIndex + 1}</span>
+          <div className="w-7 h-7 rounded-lg bg-[#CA2945]/15 border border-[#CA2945]/30 flex items-center justify-center">
+            <span className="text-[#CA2945] text-[11px] font-bold">{variantIndex + 1}</span>
           </div>
           <div>
             <p className="text-white text-[13px] font-bold m-0">Variant {variantIndex + 1}</p>
@@ -229,9 +229,9 @@ const VariantFormCard = ({ variantIndex, variant, onChange, onRemove, onImageCli
           {/* Price Amount */}
           <div className="flex-1 flex flex-col gap-1.5">
             <label className="text-[#bbb] text-[11.5px] font-semibold tracking-wide">
-              Price <span className="text-[#E8490F]">*</span>
+              Price <span className="text-[#CA2945]">*</span>
             </label>
-            <div className="flex items-center bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[42px] focus-within:border-[#E8490F] focus-within:shadow-[0_0_0_2px_rgba(232,73,15,0.1)] transition-all">
+            <div className="flex items-center bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[42px] focus-within:border-[#CA2945] focus-within:shadow-[0_0_0_2px_rgba(232,73,15,0.1)] transition-all">
               <span className="text-[#888] text-[13px] mr-2 font-semibold shrink-0">{sym}</span>
               <input
                 type="number"
@@ -254,9 +254,9 @@ const VariantFormCard = ({ variantIndex, variant, onChange, onRemove, onImageCli
           {/* Stock */}
           <div className="w-[110px] flex flex-col gap-1.5">
             <label className="text-[#bbb] text-[11.5px] font-semibold tracking-wide">
-              Stock <span className="text-[#E8490F]">*</span>
+              Stock <span className="text-[#CA2945]">*</span>
             </label>
-            <div className="flex items-center bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[42px] focus-within:border-[#E8490F] focus-within:shadow-[0_0_0_2px_rgba(232,73,15,0.1)] transition-all">
+            <div className="flex items-center bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[42px] focus-within:border-[#CA2945] focus-within:shadow-[0_0_0_2px_rgba(232,73,15,0.1)] transition-all">
               <input
                 type="number"
                 value={variant.stock}
@@ -291,8 +291,8 @@ const VariantFormCard = ({ variantIndex, variant, onChange, onRemove, onImageCli
                   onClick={() => addAttribute(attr)}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold border transition-all duration-150 cursor-pointer
                     ${alreadyAdded
-                      ? 'bg-[#E8490F]/10 border-[#E8490F]/30 text-[#E8490F] cursor-not-allowed opacity-60'
-                      : 'bg-[#1a1a1a] border-[#2a2a2a] text-[#888] hover:border-[#E8490F]/50 hover:text-[#E8490F] hover:bg-[#E8490F]/5'
+                      ? 'bg-[#CA2945]/10 border-[#CA2945]/30 text-[#CA2945] cursor-not-allowed opacity-60'
+                      : 'bg-[#1a1a1a] border-[#2a2a2a] text-[#888] hover:border-[#CA2945]/50 hover:text-[#CA2945] hover:bg-[#CA2945]/5'
                     }`}
                 >
                   {alreadyAdded ? '✓ ' : '+ '}{attr}
@@ -305,7 +305,7 @@ const VariantFormCard = ({ variantIndex, variant, onChange, onRemove, onImageCli
           <div className="flex flex-col gap-2">
             {variant.attributes.map((attr, attrIdx) => (
               <div key={attrIdx} className="flex items-center gap-2">
-                <div className="flex-1 flex items-center bg-[#1a1a1a] border border-[#252525] rounded-xl px-3 h-[38px] focus-within:border-[#E8490F]/60 transition-all">
+                <div className="flex-1 flex items-center bg-[#1a1a1a] border border-[#252525] rounded-xl px-3 h-[38px] focus-within:border-[#CA2945]/60 transition-all">
                   <input
                     type="text"
                     value={attr.key}
@@ -315,7 +315,7 @@ const VariantFormCard = ({ variantIndex, variant, onChange, onRemove, onImageCli
                   />
                 </div>
                 <div className="text-[#444] text-[12px] shrink-0">:</div>
-                <div className="flex-1 flex items-center bg-[#1a1a1a] border border-[#252525] rounded-xl px-3 h-[38px] focus-within:border-[#E8490F]/60 transition-all">
+                <div className="flex-1 flex items-center bg-[#1a1a1a] border border-[#252525] rounded-xl px-3 h-[38px] focus-within:border-[#CA2945]/60 transition-all">
                   <input
                     type="text"
                     value={attr.value}
@@ -341,7 +341,7 @@ const VariantFormCard = ({ variantIndex, variant, onChange, onRemove, onImageCli
           <button
             type="button"
             onClick={() => addAttribute('')}
-            className="mt-2 flex items-center gap-1.5 text-[#666] hover:text-[#E8490F] text-[11px] font-semibold transition-colors cursor-pointer border-none bg-transparent"
+            className="mt-2 flex items-center gap-1.5 text-[#666] hover:text-[#CA2945] text-[11px] font-semibold transition-colors cursor-pointer border-none bg-transparent"
           >
             <svg width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -452,11 +452,11 @@ const ExistingVariantCard = ({ productId, variant, index, onRefresh }) => {
 
   if (isEditing) {
     return (
-      <div className="bg-[#161616] border border-[#E8490F]/60 rounded-2xl p-5 flex flex-col gap-4">
+      <div className="bg-[#161616] border border-[#CA2945]/60 rounded-2xl p-5 flex flex-col gap-4">
         <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
         
         <div className="flex items-center justify-between border-b border-[#2a2a2a] pb-3">
-          <span className="text-[#E8490F] text-[12px] font-bold">Edit Variant {index + 1}</span>
+          <span className="text-[#CA2945] text-[12px] font-bold">Edit Variant {index + 1}</span>
           <button
             type="button"
             onClick={() => setIsEditing(false)}
@@ -474,7 +474,7 @@ const ExistingVariantCard = ({ productId, variant, index, onRefresh }) => {
               type="number"
               value={form.priceAmount}
               onChange={e => setForm(f => ({ ...f, priceAmount: e.target.value }))}
-              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#CA2945]"
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -482,7 +482,7 @@ const ExistingVariantCard = ({ productId, variant, index, onRefresh }) => {
             <select
               value={form.currency}
               onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
-              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[38px] text-white text-[13px] outline-none focus:border-[#CA2945]"
             >
               <option value="INR">INR (₹)</option>
               <option value="USD">USD ($)</option>
@@ -494,7 +494,7 @@ const ExistingVariantCard = ({ productId, variant, index, onRefresh }) => {
               type="number"
               value={form.stock}
               onChange={e => setForm(f => ({ ...f, stock: e.target.value }))}
-              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#CA2945]"
             />
           </div>
         </div>
@@ -512,7 +512,7 @@ const ExistingVariantCard = ({ productId, variant, index, onRefresh }) => {
                   disabled={exists}
                   onClick={() => addAttribute(attr)}
                   className={`px-2 py-0.5 rounded-lg text-[10px] font-semibold border transition-all cursor-pointer ${
-                    exists ? 'bg-[#E8490F]/10 border-[#E8490F]/30 text-[#E8490F] opacity-60 cursor-not-allowed' : 'bg-[#1a1a1a] border-[#2a2a2a] text-[#888] hover:text-[#E8490F]'
+                    exists ? 'bg-[#CA2945]/10 border-[#CA2945]/30 text-[#CA2945] opacity-60 cursor-not-allowed' : 'bg-[#1a1a1a] border-[#2a2a2a] text-[#888] hover:text-[#CA2945]'
                   }`}
                 >
                   {exists ? '✓ ' : '+ '}{attr}
@@ -553,7 +553,7 @@ const ExistingVariantCard = ({ productId, variant, index, onRefresh }) => {
           <button
             type="button"
             onClick={() => addAttribute('')}
-            className="mt-2 text-[#666] hover:text-[#E8490F] text-[11px] font-semibold bg-transparent border-none cursor-pointer"
+            className="mt-2 text-[#666] hover:text-[#CA2945] text-[11px] font-semibold bg-transparent border-none cursor-pointer"
           >
             + Add custom attribute
           </button>
@@ -594,7 +594,7 @@ const ExistingVariantCard = ({ productId, variant, index, onRefresh }) => {
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="px-5 py-2 bg-[#E8490F] hover:bg-[#c73a0a] rounded-xl text-white text-[12px] font-bold cursor-pointer border-none disabled:opacity-50"
+            className="px-5 py-2 bg-[#CA2945] hover:bg-[#c73a0a] rounded-xl text-white text-[12px] font-bold cursor-pointer border-none disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save Variant'}
           </button>
@@ -624,7 +624,7 @@ const ExistingVariantCard = ({ productId, variant, index, onRefresh }) => {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[#E8490F] font-bold text-[14px]">
+            <span className="text-[#CA2945] font-bold text-[14px]">
               {sym}{Number(variant.price?.amount).toLocaleString('en-IN')}
             </span>
             <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border mr-2
@@ -638,7 +638,7 @@ const ExistingVariantCard = ({ productId, variant, index, onRefresh }) => {
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="p-1.5 rounded-lg bg-[#1c1c1c] border border-[#2a2a2a] text-[#aaa] hover:text-white hover:border-[#E8490F] transition-all cursor-pointer"
+              className="p-1.5 rounded-lg bg-[#1c1c1c] border border-[#2a2a2a] text-[#aaa] hover:text-white hover:border-[#CA2945] transition-all cursor-pointer"
               title="Edit Variant"
             >
               <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -743,11 +743,11 @@ const BaseProductCard = ({ product, onRefresh }) => {
 
   if (isEditing) {
     return (
-      <div className="bg-[#181512] border-2 border-[#E8490F] rounded-2xl p-5 flex flex-col gap-4 relative">
+      <div className="bg-[#181512] border-2 border-[#CA2945] rounded-2xl p-5 flex flex-col gap-4 relative">
         <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
         
-        <div className="flex items-center justify-between border-b border-[#E8490F]/30 pb-3">
-          <span className="text-[#E8490F] text-[12px] font-bold uppercase tracking-wider">Edit Main / Original Product</span>
+        <div className="flex items-center justify-between border-b border-[#CA2945]/30 pb-3">
+          <span className="text-[#CA2945] text-[12px] font-bold uppercase tracking-wider">Edit Main / Original Product</span>
           <button
             type="button"
             onClick={() => setIsEditing(false)}
@@ -764,7 +764,7 @@ const BaseProductCard = ({ product, onRefresh }) => {
             type="text"
             value={form.title}
             onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-            className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+            className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#CA2945]"
           />
         </div>
 
@@ -775,7 +775,7 @@ const BaseProductCard = ({ product, onRefresh }) => {
             value={form.description}
             onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
             rows={3}
-            className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl p-3 text-white text-[13px] outline-none focus:border-[#E8490F] resize-none"
+            className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl p-3 text-white text-[13px] outline-none focus:border-[#CA2945] resize-none"
           />
         </div>
 
@@ -787,7 +787,7 @@ const BaseProductCard = ({ product, onRefresh }) => {
               type="number"
               value={form.priceAmount}
               onChange={e => setForm(f => ({ ...f, priceAmount: e.target.value }))}
-              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#CA2945]"
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -795,7 +795,7 @@ const BaseProductCard = ({ product, onRefresh }) => {
             <select
               value={form.priceCurrency}
               onChange={e => setForm(f => ({ ...f, priceCurrency: e.target.value }))}
-              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3 h-[38px] text-white text-[13px] outline-none focus:border-[#CA2945]"
             >
               <option value="INR">INR (₹)</option>
               <option value="USD">USD ($)</option>
@@ -807,7 +807,7 @@ const BaseProductCard = ({ product, onRefresh }) => {
               type="number"
               value={form.stock}
               onChange={e => setForm(f => ({ ...f, stock: e.target.value }))}
-              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#CA2945]"
             />
           </div>
         </div>
@@ -820,7 +820,7 @@ const BaseProductCard = ({ product, onRefresh }) => {
               type="text"
               value={form.color}
               onChange={e => setForm(f => ({ ...f, color: e.target.value }))}
-              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#CA2945]"
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -829,7 +829,7 @@ const BaseProductCard = ({ product, onRefresh }) => {
               type="text"
               value={form.size}
               onChange={e => setForm(f => ({ ...f, size: e.target.value }))}
-              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#E8490F]"
+              className="bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-3.5 h-[38px] text-white text-[13px] outline-none focus:border-[#CA2945]"
             />
           </div>
         </div>
@@ -869,7 +869,7 @@ const BaseProductCard = ({ product, onRefresh }) => {
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="px-5 py-2 bg-[#E8490F] hover:bg-[#c73a0a] rounded-xl text-white text-[12px] font-bold cursor-pointer border-none disabled:opacity-50"
+            className="px-5 py-2 bg-[#CA2945] hover:bg-[#c73a0a] rounded-xl text-white text-[12px] font-bold cursor-pointer border-none disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save Main Product'}
           </button>
@@ -879,12 +879,12 @@ const BaseProductCard = ({ product, onRefresh }) => {
   }
 
   return (
-    <div className="bg-[#1a1714] border-2 border-[#E8490F]/50 rounded-xl p-4 flex gap-4 relative overflow-hidden shadow-[0_4px_20px_rgba(232,73,15,0.08)]">
+    <div className="bg-[#1a1714] border-2 border-[#CA2945]/50 rounded-xl p-4 flex gap-4 relative overflow-hidden shadow-[0_4px_20px_rgba(232,73,15,0.08)]">
       <div className="absolute top-0 right-0 flex items-center">
         <button
           type="button"
           onClick={() => setIsEditing(true)}
-          className="bg-[#E8490F] hover:bg-[#c73a0a] text-white text-[10px] font-bold px-3 py-1.5 rounded-bl-xl tracking-wider uppercase transition-colors cursor-pointer border-none flex items-center gap-1.5 shadow-md"
+          className="bg-[#CA2945] hover:bg-[#c73a0a] text-white text-[10px] font-bold px-3 py-1.5 rounded-bl-xl tracking-wider uppercase transition-colors cursor-pointer border-none flex items-center gap-1.5 shadow-md"
         >
           <svg width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -895,7 +895,7 @@ const BaseProductCard = ({ product, onRefresh }) => {
       </div>
 
       {/* Image */}
-      <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#111] shrink-0 flex items-center justify-center border border-[#E8490F]/30">
+      <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#111] shrink-0 flex items-center justify-center border border-[#CA2945]/30">
         {product.images?.[0]?.url ? (
           <img src={product.images[0].url} alt={product.title} className="w-full h-full object-cover" />
         ) : (
@@ -908,7 +908,7 @@ const BaseProductCard = ({ product, onRefresh }) => {
       {/* Info */}
       <div className="flex-1 min-w-0 pr-32">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[#E8490F] text-[10px] font-bold tracking-wide uppercase">★ ORIGINAL / MAIN PRODUCT</span>
+          <span className="text-[#CA2945] text-[10px] font-bold tracking-wide uppercase">★ ORIGINAL / MAIN PRODUCT</span>
         </div>
         <h4 className="text-white text-[14px] font-bold m-0 mb-1 truncate">{product.title}</h4>
         <div className="flex items-center gap-3 mb-2">
@@ -926,12 +926,12 @@ const BaseProductCard = ({ product, onRefresh }) => {
         {/* Base attributes: Color, Size */}
         <div className="flex flex-wrap gap-1.5">
           {product.color && (
-            <span className="text-[10px] font-medium bg-[#2a1d17] border border-[#E8490F]/40 text-[#ffb094] px-2 py-0.5 rounded-lg">
+            <span className="text-[10px] font-medium bg-[#2a1d17] border border-[#CA2945]/40 text-[#ffb094] px-2 py-0.5 rounded-lg">
               <span className="text-[#888]">Color:</span> {product.color}
             </span>
           )}
           {product.size && (
-            <span className="text-[10px] font-medium bg-[#2a1d17] border border-[#E8490F]/40 text-[#ffb094] px-2 py-0.5 rounded-lg">
+            <span className="text-[10px] font-medium bg-[#2a1d17] border border-[#CA2945]/40 text-[#ffb094] px-2 py-0.5 rounded-lg">
               <span className="text-[#888]">Size:</span> {product.size}
             </span>
           )}
@@ -1057,12 +1057,8 @@ const SellerDetailedPage = () => {
 
   // ─── Nav items ────────────────────────────────────────────────────────────
   const navItems = [
-    { icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', label: 'Dashboard', path: '/seller/dashboard' },
     { icon: 'M12 4v16m8-8H4', label: 'Add Product', path: '/seller/create' },
     { icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z', label: 'My Products', path: '/seller/dashboard', active: true },
-    { icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', label: 'Orders' },
-    { icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', label: 'Earnings' },
-    { icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', label: 'Store Profile' },
   ];
 
   // ─── Loading state ─────────────────────────────────────────────────────────
@@ -1070,7 +1066,7 @@ const SellerDetailedPage = () => {
     return (
       <div className="flex h-screen bg-[#0d0d0d] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 rounded-full border-2 border-[#E8490F]/30 border-t-[#E8490F] animate-spin" />
+          <div className="w-10 h-10 rounded-full border-2 border-[#CA2945]/30 border-t-[#CA2945] animate-spin" />
           <span className="text-[#666] text-[13px] font-medium">Loading product…</span>
         </div>
       </div>
@@ -1081,10 +1077,10 @@ const SellerDetailedPage = () => {
     return (
       <div className="flex h-screen bg-[#0d0d0d] items-center justify-center">
         <div className="text-center">
-          <div className="text-[#E8490F] text-[32px] mb-3">⚠</div>
+          <div className="text-[#CA2945] text-[32px] mb-3">⚠</div>
           <p className="text-white font-bold text-[16px] mb-1">Product not found</p>
           <p className="text-[#666] text-[13px] mb-4">This product may have been removed or you don't have access.</p>
-          <button onClick={() => navigate('/seller/dashboard')} className="px-5 py-2 bg-[#E8490F] rounded-xl text-white text-[13px] font-semibold cursor-pointer border-none hover:bg-[#c73a0a] transition-colors">
+          <button onClick={() => navigate('/seller/dashboard')} className="px-5 py-2 bg-[#CA2945] rounded-xl text-white text-[13px] font-semibold cursor-pointer border-none hover:bg-[#c73a0a] transition-colors">
             Back to Dashboard
           </button>
         </div>
@@ -1118,7 +1114,7 @@ const SellerDetailedPage = () => {
               onClick={() => item.path && navigate(item.path)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 text-left w-full cursor-pointer border-none
                 ${item.active
-                  ? 'bg-[#E8490F] text-white font-semibold'
+                  ? 'bg-[#CA2945] text-white font-semibold'
                   : 'text-[#888] hover:text-white hover:bg-white/5 bg-transparent'
                 }`}
             >
@@ -1138,13 +1134,13 @@ const SellerDetailedPage = () => {
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%)' }} />
           <div className="relative z-10 p-4 flex flex-col h-full">
             <div className="text-[13px] font-black text-white leading-snug tracking-wide">
-              STYLE<br />STARTS<br /><span className="text-[#E8490F]">WITH YOU.</span>
+              STYLE<br />STARTS<br /><span className="text-[#CA2945]">WITH YOU.</span>
             </div>
             <p className="text-[8px] text-[#aaa] mt-2 leading-relaxed tracking-wide font-semibold uppercase m-0">
               Manage your listings<br />and reach the culture.
             </p>
             <div className="mt-auto">
-              <span className="text-[18px] font-black text-[#E8490F] italic drop-shadow-[0_0_10px_rgba(232,73,15,0.6)]">VB</span>
+              <span className="text-[18px] font-black text-[#CA2945] italic drop-shadow-[0_0_10px_rgba(232,73,15,0.6)]">VB</span>
             </div>
           </div>
         </div>
@@ -1172,7 +1168,7 @@ const SellerDetailedPage = () => {
             <span className="text-[#aaa] text-[12px] font-medium truncate max-w-[200px]">{product.title}</span>
           </div>
           <div className="flex items-center gap-2.5 bg-[#1a1a1a] border border-[#252525] rounded-xl px-3 py-1.5 cursor-pointer hover:border-[#333] transition-colors">
-            <div className="w-7 h-7 rounded-full bg-[#E8490F] flex items-center justify-center text-white text-[11px] font-black">
+            <div className="w-7 h-7 rounded-full bg-[#CA2945] flex items-center justify-center text-white text-[11px] font-black">
               {(user?.fullname || user?.name)?.[0]?.toUpperCase() ?? 'U'}
             </div>
             <div className="flex flex-col leading-tight">
@@ -1193,7 +1189,7 @@ const SellerDetailedPage = () => {
               <div>
                 <h1 className="text-[22px] font-black text-white m-0">Product Variants</h1>
                 <p className="text-[13px] text-[#888] mt-1 m-0">
-                  Manage variants for <span className="text-[#E8490F] font-bold">{product.title}</span>
+                  Manage variants for <span className="text-[#CA2945] font-bold">{product.title}</span>
                 </p>
               </div>
 
@@ -1209,7 +1205,7 @@ const SellerDetailedPage = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-semibold transition-all duration-200 cursor-pointer border-none
                       ${activeTab === tab.id
-                        ? 'bg-[#E8490F] text-white shadow-[0_2px_8px_rgba(232,73,15,0.3)]'
+                        ? 'bg-[#CA2945] text-white shadow-[0_2px_8px_rgba(232,73,15,0.3)]'
                         : 'text-[#666] hover:text-white bg-transparent'
                       }`}
                   >
@@ -1286,7 +1282,7 @@ const SellerDetailedPage = () => {
                     <button
                       type="button"
                       onClick={addVariant}
-                      className="w-full h-[48px] flex items-center justify-center gap-2 bg-[#161616] border border-dashed border-[#2a2a2a] rounded-2xl text-[#666] hover:text-[#E8490F] hover:border-[#E8490F]/50 hover:bg-[#E8490F]/5 text-[13px] font-semibold transition-all duration-200 cursor-pointer"
+                      className="w-full h-[48px] flex items-center justify-center gap-2 bg-[#161616] border border-dashed border-[#2a2a2a] rounded-2xl text-[#666] hover:text-[#CA2945] hover:border-[#CA2945]/50 hover:bg-[#CA2945]/5 text-[13px] font-semibold transition-all duration-200 cursor-pointer"
                     >
                       <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                         <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -1345,7 +1341,7 @@ const SellerDetailedPage = () => {
                 <div className="p-4 flex flex-col gap-2.5">
                   <h3 className="text-white text-[14px] font-bold m-0 leading-tight line-clamp-2">{product.title}</h3>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-[#E8490F] font-black text-[16px]">
+                    <span className="text-[#CA2945] font-black text-[16px]">
                       {sym}{Number(product.price?.amount).toLocaleString('en-IN')}
                     </span>
                     <span className="text-[#555] text-[10px]">{product.price?.currency}</span>
@@ -1373,7 +1369,7 @@ const SellerDetailedPage = () => {
                     </span>
                     <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border
                       ${existingVariants.length > 0
-                        ? 'bg-[#E8490F]/10 border-[#E8490F]/30 text-[#E8490F]'
+                        ? 'bg-[#CA2945]/10 border-[#CA2945]/30 text-[#CA2945]'
                         : 'bg-[#1a1a1a] border-[#252525] text-[#555]'}`}>
                       {existingVariants.length} variant{existingVariants.length !== 1 ? 's' : ''}
                     </span>
@@ -1419,8 +1415,8 @@ const SellerDetailedPage = () => {
               </div>
 
               {/* Quick tip */}
-              <div className="bg-[#E8490F]/5 border border-[#E8490F]/20 rounded-2xl p-4">
-                <p className="text-[#E8490F] text-[10px] font-bold uppercase tracking-wide m-0 mb-2">💡 Quick Tip</p>
+              <div className="bg-[#CA2945]/5 border border-[#CA2945]/20 rounded-2xl p-4">
+                <p className="text-[#CA2945] text-[10px] font-bold uppercase tracking-wide m-0 mb-2">💡 Quick Tip</p>
                 <p className="text-[#aaa] text-[11px] leading-relaxed m-0">
                   Use the attribute chips to quickly tag Size, Color, or Fit. Each variant gets its own images, price, and stock.
                 </p>

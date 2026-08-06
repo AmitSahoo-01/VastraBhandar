@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useProduct } from '../hook/useProduct';
 import { useNavigate } from 'react-router-dom';
+import ProductCard from '../components/ProductCard';
 
 // ── Dummy carousel images ─────────────────────────────────────────────────────
 const CAROUSEL_IMAGES = [
@@ -26,12 +27,12 @@ const SLOT_CONFIG = {
      '2': { h: 198, w: 134, opacity: 0.60 },
 };
 
-// ── Gold decorator ────────────────────────────────────────────────────────────
+// ── Crimson decorator ────────────────────────────────────────────────────────
 const Decorator = () => (
     <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{ width: '90px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(232,73,15,0.65))' }} />
-        <div style={{ width: '7px', height: '7px', background: '#E8490F', transform: 'rotate(45deg)', boxShadow: '0 0 10px rgba(232,73,15,0.6)', flexShrink: 0 }} />
-        <div style={{ width: '90px', height: '1px', background: 'linear-gradient(to left, transparent, rgba(232,73,15,0.65))' }} />
+        <div style={{ width: '90px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(202,41,69,0.65))' }} />
+        <div style={{ width: '7px', height: '7px', background: '#CA2945', transform: 'rotate(45deg)', boxShadow: '0 0 10px rgba(202,41,69,0.4)', flexShrink: 0 }} />
+        <div style={{ width: '90px', height: '1px', background: 'linear-gradient(to left, transparent, rgba(202,41,69,0.65))' }} />
     </div>
 );
 
@@ -45,13 +46,14 @@ const ArrowBtn = ({ onClick, direction }) => {
             onMouseLeave={() => setHov(false)}
             style={{
                 flexShrink: 0, width: '42px', height: '42px', borderRadius: '50%',
-                border: `1.5px solid ${hov ? '#E8490F' : 'rgba(255,255,255,0.22)'}`,
-                background: hov ? 'rgba(232,73,15,0.12)' : 'rgba(255,255,255,0.04)',
-                color: hov ? '#E8490F' : 'rgba(255,255,255,0.70)',
+                border: `1.5px solid ${hov ? '#CA2945' : '#e5e7eb'}`,
+                background: hov ? 'rgba(202,41,69,0.08)' : '#ffffff',
+                color: hov ? '#CA2945' : '#374151',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: 'pointer', outline: 'none',
                 transition: 'all 0.30s cubic-bezier(0.4, 0, 0.2, 1)',
                 transform: hov ? 'scale(1.12)' : 'scale(1)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
             }}
             aria-label={direction === 'prev' ? 'Previous' : 'Next'}
         >
@@ -63,8 +65,6 @@ const ArrowBtn = ({ onClick, direction }) => {
 };
 
 // ── CrossFadeImage: no-blink image transition ────────────────────────────────
-// Old image stays fully visible (base layer) while new image fades in on top.
-// Eliminates the white/dark blink caused by key={id} unmounting the old img.
 const CrossFadeImage = ({ src, alt }) => {
     const [current,  setCurrent]  = useState(src);
     const [previous, setPrevious] = useState(null);
@@ -73,15 +73,14 @@ const CrossFadeImage = ({ src, alt }) => {
     useEffect(() => {
         if (src === current) return;
         clearTimeout(timerRef.current);
-        setPrevious(current);  // freeze old image as opaque base layer
-        setCurrent(src);        // new image will fade in on top
+        setPrevious(current);
+        setCurrent(src);
         timerRef.current = setTimeout(() => setPrevious(null), 500);
         return () => clearTimeout(timerRef.current);
     }, [src]);
 
     return (
         <>
-            {/* Base layer: previous image stays fully visible — zero blink */}
             {previous && (
                 <img
                     src={previous}
@@ -94,7 +93,6 @@ const CrossFadeImage = ({ src, alt }) => {
                     }}
                 />
             )}
-            {/* Top layer: new image fades in over the previous */}
             <img
                 key={current}
                 src={current}
@@ -117,125 +115,218 @@ const CrossFadeImage = ({ src, alt }) => {
 // ── Currency symbol helper ─────────────────────────────────────────────────────
 const currencySymbol = (code) => ({ USD: '$', EUR: '€', GBP: '£' }[code] ?? '₹');
 
-// ── Product card ──────────────────────────────────────────────────────────────
-const ProductCard = ({ product, index }) => {
-    const { title, description, price, images } = product;
-    const imgSrc = images?.[0]?.url;
-    const sym    = currencySymbol(price?.currency);
-    const navigate = useNavigate();
-
-    return (
-        <div
-            className="vb-product-card"
-            onClick={() => navigate(`/product/${product._id}`)}
-            style={{
-                background: '#161616',
-                border: '1px solid #1e1e1e',
-                borderRadius: '12px',
-                overflow: 'hidden',
-                cursor: 'pointer',
-                transition: 'transform 0.4s cubic-bezier(0.4,0,0.2,1), box-shadow 0.4s cubic-bezier(0.4,0,0.2,1), border-color 0.4s',
-                animation: 'fadeUp 0.55s ease both',
-                animationDelay: `${Math.min(index * 0.08, 0.6)}s`,
-                willChange: 'transform',
-            }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-7px)';
-                e.currentTarget.style.borderColor = 'rgba(232,73,15,0.45)';
-                e.currentTarget.style.boxShadow = '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(232,73,15,0.10)';
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.borderColor = '#1e1e1e';
-                e.currentTarget.style.boxShadow = 'none';
-            }}
-        >
-            {/* Image */}
-            <div style={{ width: '100%', aspectRatio: '3/4', overflow: 'hidden', background: '#111111', position: 'relative' }}>
-                {imgSrc ? (
-                    <img
-                        src={imgSrc}
-                        alt={title}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.55s cubic-bezier(0.4,0,0.2,1)' }}
-                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.07)'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
-                        loading="lazy"
-                    />
-                ) : (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <svg width="38" height="38" fill="none" stroke="rgba(232,73,15,0.25)" strokeWidth="1.5" viewBox="0 0 24 24">
-                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                            <circle cx="8.5" cy="8.5" r="1.5" />
-                            <polyline points="21 15 16 10 5 21" />
-                        </svg>
-                    </div>
-                )}
-                {/* Bottom gradient */}
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top, rgba(13,13,13,0.65) 0%, transparent 100%)', pointerEvents: 'none' }} />
-            </div>
-
-            {/* Info */}
-            <div style={{ padding: '16px 18px 18px' }}>
-                <h3 style={{
-                    color: '#ffffff', fontSize: '13px', fontWeight: 700, margin: '0 0 6px',
-                    fontFamily: "'Inter', sans-serif", letterSpacing: '0.5px',
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>
-                    {title}
-                </h3>
-                {description && (
-                    <p style={{
-                        color: 'rgba(255,255,255,0.40)', fontSize: '11.5px', margin: '0 0 14px',
-                        lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                    }}>
-                        {description}
-                    </p>
-                )}
-                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#E8490F', fontSize: '17px', fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>
-                        {sym}{(price?.amount || 0).toLocaleString('en-IN')}
-                    </span>
-                    <span style={{ color: 'rgba(255,255,255,0.30)', fontSize: '9.5px', letterSpacing: '1.5px', fontFamily: "'Inter', sans-serif" }}>
-                        {price?.currency || 'INR'}
-                    </span>
-                </div>
-            </div>
-        </div>
-    );
-};
-
 // ── Loading skeleton card ─────────────────────────────────────────────────────
 const SkeletonCard = ({ index }) => (
     <div style={{
-        background: '#161616', border: '1px solid #1e1e1e',
-        borderRadius: '12px', overflow: 'hidden',
+        background: '#ffffff', border: '1px solid #e5e7eb',
+        borderRadius: '14px', overflow: 'hidden',
         animation: 'skeletonPulse 1.6s ease-in-out infinite',
         animationDelay: `${index * 0.12}s`,
     }}>
-        <div style={{ width: '100%', aspectRatio: '3/4', background: 'rgba(255,255,255,0.05)' }} />
+        <div style={{ width: '100%', aspectRatio: '3/4', background: '#f3f4f6' }} />
         <div style={{ padding: '16px 18px 18px', display: 'flex', flexDirection: 'column', gap: '9px' }}>
-            <div style={{ height: '13px', background: 'rgba(255,255,255,0.07)', borderRadius: '4px', width: '68%' }} />
-            <div style={{ height: '11px', background: 'rgba(255,255,255,0.04)', borderRadius: '4px' }} />
-            <div style={{ height: '11px', background: 'rgba(255,255,255,0.04)', borderRadius: '4px', width: '55%' }} />
-            <div style={{ height: '17px', background: 'rgba(232,73,15,0.10)', borderRadius: '4px', width: '38%', marginTop: '5px' }} />
+            <div style={{ height: '13px', background: '#e5e7eb', borderRadius: '4px', width: '68%' }} />
+            <div style={{ height: '11px', background: '#f3f4f6', borderRadius: '4px' }} />
+            <div style={{ height: '11px', background: '#f3f4f6', borderRadius: '4px', width: '55%' }} />
+            <div style={{ height: '17px', background: 'rgba(202,41,69,0.10)', borderRadius: '4px', width: '38%', marginTop: '5px' }} />
         </div>
     </div>
 );
 
-// ── Empty state ───────────────────────────────────────────────────────────────
-const EmptyState = () => (
-    <div style={{ textAlign: 'center', padding: '64px 0', color: 'rgba(255,255,255,0.35)' }}>
-        <div style={{ width: '64px', height: '64px', borderRadius: '16px', border: '1px solid rgba(232,73,15,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-            <svg width="28" height="28" fill="none" stroke="rgba(232,73,15,0.5)" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-            </svg>
-        </div>
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', letterSpacing: '2px', color: 'rgba(232,73,15,0.5)', margin: 0, fontWeight: 700 }}>NO PRODUCTS YET</p>
-        <p style={{ fontSize: '12px', marginTop: '8px', color: 'rgba(255,255,255,0.25)' }}>Be the first to list something amazing.</p>
-    </div>
-);
+// ── Story Editorial Section ──────────────────────────────────────────────────
+const StorySection = () => {
+    const [activeStackIdx, setActiveStackIdx] = useState(0);
+
+    const STACK_IMAGES = [
+        {
+            url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop",
+            alt: "Editorial Fashion 1",
+            bw: true,
+        },
+        {
+            url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop",
+            alt: "Editorial Fashion 2",
+            bw: false,
+        },
+        {
+            url: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop",
+            alt: "Editorial Fashion 3",
+            bw: true,
+        },
+        {
+            url: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop",
+            alt: "Editorial Fashion 4",
+            bw: false,
+        },
+    ];
+
+    const scrollToProducts = () => {
+        document.getElementById('vb-products')?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    return (
+        <section
+            id="vb-story"
+            style={{
+                background: '#1a1918',
+                color: '#d6c6b0',
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '40px 80px',
+                position: 'relative',
+                overflow: 'hidden',
+                fontFamily: "'Inter', sans-serif",
+                boxSizing: 'border-box',
+            }}
+        >
+            <div
+                style={{
+                    width: '100%',
+                    maxWidth: '1360px',
+                    display: 'grid',
+                    gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1.4fr)',
+                    gap: '64px',
+                    alignItems: 'center',
+                }}
+            >
+                {/* LEFT CONTENT */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', zIndex: 10 }}>
+                    <h2
+                        style={{
+                            fontFamily: "'Cormorant Garamond', Georgia, serif",
+                            fontSize: '76px',
+                            fontWeight: 400,
+                            lineHeight: 1.02,
+                            letterSpacing: '-1.5px',
+                            color: '#d6c6b0',
+                            margin: 0,
+                        }}
+                    >
+                        Become<br />part of a<br />great Story
+                    </h2>
+
+                    <p style={{ color: '#8e867b', fontSize: '15px', margin: 0, letterSpacing: '0.2px', fontWeight: 400 }}>
+                        Architecture informs the approach to design.
+                    </p>
+
+                    <button
+                        onClick={scrollToProducts}
+                        style={{
+                            width: 'fit-content',
+                            padding: '12px 32px',
+                            borderRadius: '30px',
+                            border: '1px solid #d6c6b0',
+                            background: 'transparent',
+                            color: '#d6c6b0',
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            letterSpacing: '0.5px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            marginTop: '12px',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#d6c6b0';
+                            e.currentTarget.style.borderColor = '#d6c6b0';
+                            e.currentTarget.style.color = '#1a1918';
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 8px 24px rgba(214, 198, 176, 0.25)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.borderColor = '#d6c6b0';
+                            e.currentTarget.style.color = '#d6c6b0';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = 'none';
+                        }}
+                    >
+                        Explore Collection
+                    </button>
+                </div>
+
+                {/* RIGHT OVERLAPPING CARDS STACK */}
+                <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                    <div
+                        style={{
+                            height: '520px',
+                            position: 'relative',
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
+                        {STACK_IMAGES.map((img, idx) => {
+                            const isHovered = activeStackIdx === idx;
+                            const offsetLeft = idx * 115;
+                            const zIndex = 10 - idx;
+                            const width = 370 - idx * 30;
+                            const height = 490 - idx * 35;
+
+                            return (
+                                <div
+                                    key={idx}
+                                    onClick={() => setActiveStackIdx(idx)}
+                                    onMouseEnter={() => setActiveStackIdx(idx)}
+                                    style={{
+                                        position: 'absolute',
+                                        left: `${offsetLeft}px`,
+                                        width: `${width}px`,
+                                        height: `${height}px`,
+                                        borderRadius: '2px',
+                                        overflow: 'hidden',
+                                        zIndex: isHovered ? 20 : zIndex,
+                                        boxShadow: isHovered
+                                            ? '0 28px 56px rgba(0, 0, 0, 0.75), 0 0 0 2px rgba(214, 198, 176, 0.6)'
+                                            : '0 16px 36px rgba(0, 0, 0, 0.55)',
+                                        transform: isHovered ? 'translateY(-12px) scale(1.02)' : 'translateY(0) scale(1)',
+                                        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                                        cursor: 'pointer',
+                                        filter: img.bw ? (isHovered ? 'grayscale(0%)' : 'grayscale(100%)') : 'none',
+                                    }}
+                                >
+                                    <img
+                                        src={img.url}
+                                        alt={img.alt}
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            objectFit: 'cover',
+                                            display: 'block',
+                                        }}
+                                        draggable={false}
+                                    />
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            inset: 0,
+                                            background: isHovered
+                                                ? 'transparent'
+                                                : `rgba(0,0,0, ${0.15 + idx * 0.1})`,
+                                            transition: 'background 0.3s ease',
+                                        }}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Bottom Progress Bar / Indicator */}
+                    <div style={{ width: '100%', maxWidth: '660px', height: '2px', background: '#2d2b28', borderRadius: '1px', overflow: 'hidden', position: 'relative' }}>
+                        <div
+                            style={{
+                                height: '100%',
+                                width: `${((activeStackIdx + 1) / STACK_IMAGES.length) * 100}%`,
+                                background: '#d6c6b0',
+                                transition: 'width 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                            }}
+                        />
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // ── Main Home Component ───────────────────────────────────────────────────────
@@ -279,6 +370,14 @@ const Home = () => {
 
     const prev = useCallback(() => setCenterIdx((c) => (c - 1 + total) % total), [total]);
     const next = useCallback(() => setCenterIdx((c) => (c + 1) % total), [total]);
+
+    // ── Auto-slide carousel infinitely every 2 seconds ──
+    useEffect(() => {
+        const timer = setInterval(() => {
+            next();
+        }, 2000);
+        return () => clearInterval(timer);
+    }, [next]);
 
     // ── Drag / Swipe / Touchpad ──────────────────────────────────────
     const [grabbing, setGrabbing] = useState(false);
@@ -359,7 +458,7 @@ const Home = () => {
     }, [next, prev]);
 
     return (
-        <div style={{ fontFamily: "'Inter', sans-serif", background: '#0d0d0d' }}>
+        <div style={{ fontFamily: "'Inter', sans-serif", background: '#ffffff', color: '#111827' }}>
 
             {/* ── Inline CSS: keyframes + global smooth scroll ── */}
             <style>{`
@@ -392,15 +491,17 @@ const Home = () => {
                     display: 'flex', flexDirection: 'column',
                     alignItems: 'center', justifyContent: 'center',
                     position: 'relative', overflow: 'hidden',
-                    backgroundImage: "url('/background.png')",
-                    backgroundSize: 'cover', backgroundPosition: 'center center', backgroundRepeat: 'no-repeat',
+                    backgroundImage: 'url(/background.png)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
                     userSelect: 'none',
                 }}
             >
                 {/* Overlay */}
                 <div style={{
                     position: 'absolute', inset: 0,
-                    background: 'linear-gradient(155deg, rgba(13,13,13,0.94) 0%, rgba(13,13,13,0.85) 55%, rgba(13,13,13,0.94) 100%)',
+                    // background: 'linear-gradient(155deg, rgba(255,255,255,0.75) 0%, rgba(248,249,250,0.65) 55%, rgba(255,255,255,0.75) 100%)',
                     zIndex: 0,
                 }} />
 
@@ -416,24 +517,23 @@ const Home = () => {
                     <h1 style={{
                         fontFamily: "'Inter', sans-serif",
                         fontSize: '52px', fontWeight: 900, letterSpacing: '14px',
-                        color: '#E8490F', textAlign: 'center', margin: '0 0 14px',
+                        color: '#CA2945', textAlign: 'center', margin: '0 0 14px',
                         lineHeight: 1.1,
-                        textShadow: '0 0 60px rgba(232,73,15,0.35), 0 2px 12px rgba(0,0,0,0.6)',
                     }}>
-                        VASTRA BHANDAR
+                        {/* VASTRA BHANDAR */}
                     </h1>
 
-                    <div style={{ marginBottom: '24px' }}><Decorator /></div>
+                    {/* <div style={{ marginBottom: '24px' }}><Decorator /></div> */}
 
                     {/* Quote */}
                     <p style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontStyle: 'italic', fontWeight: 300,
-                        fontSize: '18.5px', color: 'rgba(255,255,255,0.65)',
-                        textAlign: 'center', lineHeight: 1.8, letterSpacing: '0.3px',
-                        margin: '0 0 44px',
+                        fontSize: '32px', fontWeight: 900, letterSpacing: '14px',
+                        color: '#CA2945', textAlign: 'center', margin: '0 0 14px',
+                        lineHeight: 1.1,
                     }}>
-                        "Style is a way to say who you are<br />without having to speak."
+                        {/* VASTRA <br></br>
+                        BHANDAR */}
                     </p>
 
                     {/* ── Carousel ── */}
@@ -443,7 +543,7 @@ const Home = () => {
                     }}>
                         <ArrowBtn onClick={prev} direction="prev" />
 
-                        {/* Image strip — ref'd for non-passive native event listeners */}
+                        {/* Image strip */}
                         <div
                             ref={carouselRef}
                             onMouseDown={handleMouseDown}
@@ -451,7 +551,7 @@ const Home = () => {
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 gap: '10px', flex: 1,
                                 cursor: grabbing ? 'grabbing' : 'grab',
-                                touchAction: 'none', // hand all touch events to JS
+                                touchAction: 'none',
                                 userSelect: 'none',
                             }}
                         >
@@ -459,7 +559,6 @@ const Home = () => {
                                 const cfg      = SLOT_CONFIG[String(pos)];
                                 const isCenter = pos === 0;
                                 return (
-                                    // Stable slot — DOM element stays, only image inside changes
                                     <div
                                         key={pos}
                                         style={{
@@ -467,21 +566,19 @@ const Home = () => {
                                             width: `${cfg.w}px`,
                                             flexShrink: 0,
                                             opacity: cfg.opacity,
-                                            borderRadius: '4px',
+                                            borderRadius: '8px',
                                             overflow: 'hidden',
                                             position: 'relative',
-                                            // GPU-accelerated smooth transition for size/opacity
                                             transition: 'height 0.50s cubic-bezier(0.4,0,0.2,1), width 0.50s cubic-bezier(0.4,0,0.2,1), opacity 0.50s cubic-bezier(0.4,0,0.2,1), box-shadow 0.50s cubic-bezier(0.4,0,0.2,1)',
                                             willChange: 'height, width, opacity',
                                             boxShadow: isCenter
-                                                ? '0 0 0 2px rgba(232,73,15,0.80), 0 16px 48px rgba(0,0,0,0.65)'
-                                                : '0 6px 20px rgba(0,0,0,0.45)',
+                                                ? '0 0 0 2px #CA2945, 0 16px 40px rgba(0,0,0,0.12)'
+                                                : '0 6px 16px rgba(0,0,0,0.06)',
                                         }}
                                     >
                                         <CrossFadeImage src={src} alt={alt} />
-                                        {/* Dark vignette on non-center */}
                                         {!isCenter && (
-                                            <div style={{ position: 'absolute', inset: 0, background: 'rgba(7,16,38,0.18)', pointerEvents: 'none', zIndex: 3 }} />
+                                            <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.25)', pointerEvents: 'none', zIndex: 3 }} />
                                         )}
                                     </div>
                                 );
@@ -500,7 +597,7 @@ const Home = () => {
                                 style={{
                                     width: i === centerIdx ? '20px' : '6px',
                                     height: '6px', borderRadius: '3px', border: 'none', padding: 0, cursor: 'pointer',
-                                    background: i === centerIdx ? '#E8490F' : 'rgba(232,73,15,0.30)',
+                                    background: i === centerIdx ? '#CA2945' : 'rgba(202,41,69,0.25)',
                                     transition: 'all 0.35s cubic-bezier(0.4,0,0.2,1)',
                                 }}
                                 aria-label={`Go to slide ${i + 1}`}
@@ -512,7 +609,7 @@ const Home = () => {
                     <p style={{
                         fontFamily: "'Inter', sans-serif",
                         fontSize: '11px', fontWeight: 700, letterSpacing: '5px',
-                        color: '#E8490F', textAlign: 'center',
+                        color: '#CA2945', textAlign: 'center',
                         margin: '36px 0 14px', opacity: 0.90,
                     }}>
                         CLOTHES THAT SPEAK. STYLE THAT STAYS.
@@ -521,17 +618,17 @@ const Home = () => {
 
                     {/* Scroll hint */}
                     <button
-                        onClick={() => document.getElementById('vb-products')?.scrollIntoView()}
+                        onClick={() => document.getElementById('vb-story')?.scrollIntoView({ behavior: 'smooth' })}
                         style={{
                             marginTop: '32px', background: 'none', border: 'none', cursor: 'pointer',
                             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
-                            color: 'rgba(255,255,255,0.35)', transition: 'color 0.25s',
+                            color: '#6b7280', transition: 'color 0.25s',
                             animation: 'fadeUp 1s ease 0.6s both',
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = '#c9a84c'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.35)'; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = '#CA2945'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = '#6b7280'; }}
                     >
-                        <span style={{ fontSize: '10px', letterSpacing: '3px' }}>EXPLORE</span>
+                        <span style={{ fontSize: '10px', letterSpacing: '3px', fontWeight: 700 }}>EXPLORE</span>
                         <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"
                             style={{ animation: 'bounce 1.8s ease-in-out infinite' }}>
                             <polyline points="6 9 12 15 18 9" />
@@ -541,31 +638,36 @@ const Home = () => {
             </section>
 
             {/* ═══════════════════════════════════════
-                SECTION 2 — PRODUCTS GRID
+                SECTION 2 — EDITORIAL STORY (MATCHING REFERENCE UI)
+            ═══════════════════════════════════════ */}
+            <StorySection />
+
+            {/* ═══════════════════════════════════════
+                SECTION 3 — PRODUCTS GRID
             ═══════════════════════════════════════ */}
             <section
                 id="vb-products"
                 style={{
-                    background: 'linear-gradient(180deg, #0d0d0d 0%, #0a0a0a 100%)',
+                    background: '#ffffff',
                     padding: '90px 60px 100px',
-                    borderTop: '1px solid rgba(232,73,15,0.08)',
+                    borderTop: '1px solid #e5e7eb',
                 }}
             >
                 {/* Section heading */}
                 <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-                    <p style={{ color: 'rgba(232,73,15,0.65)', fontSize: '10px', letterSpacing: '5px', margin: '0 0 14px', fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>
+                    <p style={{ color: '#CA2945', fontSize: '10px', letterSpacing: '5px', margin: '0 0 14px', fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>
                         CURATED FOR YOU
                     </p>
                     <h2 style={{
                         fontFamily: "'Inter', sans-serif",
                         fontSize: '32px', fontWeight: 900, letterSpacing: '6px',
-                        color: '#ffffff', margin: '0 0 18px',
+                        color: '#111827', margin: '0 0 18px',
                     }}>
                         FEATURED COLLECTION
                     </h2>
                     <Decorator />
                     {!loadingProducts && products?.length > 0 && (
-                        <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: '12px', marginTop: '14px', letterSpacing: '1px' }}>
+                        <p style={{ color: '#6b7280', fontSize: '12px', marginTop: '14px', letterSpacing: '1px' }}>
                             {products.length} {products.length === 1 ? 'piece' : 'pieces'} available
                         </p>
                     )}
@@ -575,8 +677,8 @@ const Home = () => {
                 {loadingProducts ? (
                     <div style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-                        gap: '24px', maxWidth: '1200px', margin: '0 auto',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                        gap: '28px', maxWidth: '1200px', margin: '0 auto',
                     }}>
                         {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} index={i} />)}
                     </div>
@@ -585,8 +687,8 @@ const Home = () => {
                 ) : (
                     <div style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-                        gap: '24px', maxWidth: '1200px', margin: '0 auto',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                        gap: '28px', maxWidth: '1200px', margin: '0 auto',
                     }}>
                         {products.map((product, i) => (
                             <ProductCard key={product._id} product={product} index={i} />
@@ -598,24 +700,12 @@ const Home = () => {
                 {!loadingProducts && products?.length > 0 && (
                     <div style={{ textAlign: 'center', marginTop: '64px' }}>
                         <Decorator />
-                        <p style={{ color: 'rgba(232,73,15,0.45)', fontSize: '10px', letterSpacing: '4px', marginTop: '16px', fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>
+                        <p style={{ color: '#CA2945', fontSize: '10px', letterSpacing: '4px', marginTop: '16px', fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>
                             MORE COMING SOON
                         </p>
                     </div>
                 )}
             </section>
-
-            {/* Footer strip */}
-            <footer style={{
-                background: '#080808',
-                borderTop: '1px solid rgba(232,73,15,0.08)',
-                padding: '28px 40px',
-                textAlign: 'center',
-            }}>
-                <p style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(255,255,255,0.20)', fontSize: '11px', letterSpacing: '3px', margin: 0, fontWeight: 600 }}>
-                    © 2025 VASTRA <span style={{ color: '#E8490F' }}>BHANDAR</span> — ALL RIGHTS RESERVED
-                </p>
-            </footer>
         </div>
     );
 };

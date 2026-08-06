@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
 @import 'tailwindcss';
 
@@ -7,16 +6,16 @@
   --font-cinzel: 'Cinzel', 'Georgia', serif;
   --font-cormorant: 'Cormorant Garamond', 'Georgia', serif;
 
-  /* ── Brand palette: black + orange ── */
-  --color-brand:       #E8490F;
-  --color-brand-dark:  #c73a0a;
-  --color-brand-glow:  rgba(232, 73, 15, 0.18);
+  /* ── Brand palette: White + Crimson #CA2945 ── */
+  --color-brand:       #CA2945;
+  --color-brand-dark:  #b0203a;
+  --color-brand-glow:  rgba(202, 41, 69, 0.18);
 
-  --color-surface:     #161616;
-  --color-surface-mid: #111111;
-  --color-bg:          #0d0d0d;
-  --color-border:      #1e1e1e;
-  --color-border-hover:rgba(232, 73, 15, 0.40);
+  --color-surface:     #ffffff;
+  --color-surface-mid: #f8f9fa;
+  --color-bg:          #ffffff;
+  --color-border:      #e5e7eb;
+  --color-border-hover:rgba(202, 41, 69, 0.40);
 }
 
 /* ── Base ── */
@@ -26,8 +25,8 @@ body {
   margin: 0;
   font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;
-  background: #0d0d0d;
-  color: #ffffff;
+  background: #ffffff;
+  color: #111827;
 }
 
 html {
@@ -37,14 +36,14 @@ html {
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #0d0d0d; }
-::-webkit-scrollbar-thumb { background: rgba(232,73,15,0.30); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(232,73,15,0.55); }
+::-webkit-scrollbar-track { background: #f8f9fa; }
+::-webkit-scrollbar-thumb { background: rgba(202,41,69,0.30); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(202,41,69,0.55); }
 
-/* ── Orange gradient button ── */
+/* ── Crimson gradient button ── */
 @utility btn-hover-gradient {
-  background: #E8490F !important;
-  background-image: linear-gradient(135deg, #E8490F 0%, #c73a0a 50%, #E8490F 100%) !important;
+  background: #CA2945 !important;
+  background-image: linear-gradient(135deg, #CA2945 0%, #b0203a 50%, #CA2945 100%) !important;
   background-size: 200% auto !important;
   background-position: 0% 0% !important;
   color: #ffffff !important;
@@ -53,15 +52,15 @@ html {
 
   &:hover {
     background-position: 100% 100% !important;
-    box-shadow: 0 0 24px rgba(232,73,15,0.40) !important;
+    box-shadow: 0 0 24px rgba(202,41,69,0.35) !important;
     transform: translateY(-1px) !important;
   }
 }
 
-/* ── Orange focus ring for form inputs ── */
+/* ── Crimson focus ring for form inputs ── */
 @utility input-orange-focus {
   &:focus-within {
-    border-color: #E8490F !important;
-    box-shadow: 0 0 0 2px rgba(232,73,15,0.15) !important;
+    border-color: #CA2945 !important;
+    box-shadow: 0 0 0 2px rgba(202,41,69,0.15) !important;
   }
 }
