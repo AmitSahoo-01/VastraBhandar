@@ -20,8 +20,16 @@ const getItemInfo = (item) => {
         ? (typeof item.variant === 'object' ? item.variant._id : item.variant)
         : null;
 
-    if (itemVariantId && product.variants?.length) {
-        variantObj = product.variants.find(v => String(v._id) === String(itemVariantId));
+    if (product.variants) {
+        if (Array.isArray(product.variants)) {
+            variantObj = product.variants.find(v => String(v._id) === String(itemVariantId));
+        } else if (typeof product.variants === 'object') {
+            variantObj = product.variants;
+        }
+    }
+
+    if (!variantObj && typeof item.variant === 'object' && item.variant !== null) {
+        variantObj = item.variant;
     }
 
     const image = variantObj?.images?.[0]?.url || product.images?.[0]?.url || '';
@@ -46,7 +54,7 @@ const getItemInfo = (item) => {
     if (size === '-' && product.size) size = product.size;
 
     const unitPrice = item.price?.amount ?? variantObj?.price?.amount ?? product.price?.amount ?? 0;
-    const currency = item.price?.currency ?? variantObj?.price?.currency ?? product.price?.currency ?? 'INR';
+    const itemCurrency = item.price?.currency ?? variantObj?.price?.currency ?? product.price?.currency ?? 'INR';
     const totalPrice = unitPrice * (item.quantity || 1);
 
     return {
@@ -55,7 +63,7 @@ const getItemInfo = (item) => {
         size,
         unitPrice,
         totalPrice,
-        currency,
+        currency: itemCurrency,
         title: product.title || 'Product',
         description: product.description || '',
         productId,
@@ -65,7 +73,7 @@ const getItemInfo = (item) => {
 
 const Cart = () => {
     const navigate = useNavigate();
-    const { items = [] } = useSelector((state) => state.cart);
+    const { items = [], totalAmount = 0, currency: cartCurrency = 'INR' } = useSelector((state) => state.cart);
     const { handleGetCart, handleAddItem } = useCart();
 
     const [loading, setLoading] = useState(true);
@@ -91,19 +99,21 @@ const Cart = () => {
 
     // Calculate totals
     const { subtotal, currency, totalItemsCount } = useMemo(() => {
-        let sum = 0;
         let count = 0;
-        let curr = 'INR';
-
         items.forEach(item => {
-            const info = getItemInfo(item);
-            sum += info.totalPrice;
             count += item.quantity || 1;
-            if (info.currency) curr = info.currency;
         });
 
-        return { subtotal: sum, currency: curr, totalItemsCount: count };
-    }, [items]);
+        let sum = totalAmount;
+        if (!sum && items.length > 0) {
+            sum = items.reduce((acc, item) => {
+                const info = getItemInfo(item);
+                return acc + info.totalPrice;
+            }, 0);
+        }
+
+        return { subtotal: sum, currency: cartCurrency, totalItemsCount: count };
+    }, [items, totalAmount, cartCurrency]);
 
     const discount = promoApplied ? Math.round(subtotal * 0.1) : 0;
     const finalTotal = Math.max(0, subtotal - discount);

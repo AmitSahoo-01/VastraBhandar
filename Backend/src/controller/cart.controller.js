@@ -1,6 +1,7 @@
 import cartModel from "../models/cart.model.js";
 import productModel from "../models/product.model.js";
 import { getStockOfVariant } from "../dao/product.dao.js";
+import mongoose from "mongoose";
 
 
 export const addToCart = async (req, res) => {
@@ -117,7 +118,92 @@ export const addToCart = async (req, res) => {
 export const getCart = async (req, res) => {
     const userId = req.user._id;
     try {
-        const cart = await cartModel.findOne({ user: userId }).populate("items.product");
+        const cart = await cartModel.aggregate([
+    {
+      $match: {
+        user: new mongoose.Types.ObjectId(userId)
+      }
+    },
+    { $unwind: { path: '$items' } },
+    {
+      $lookup: {
+        from: 'products',
+        localField: 'items.product',
+        foreignField: '_id',
+        as: 'items.product'
+      }
+    },
+    { $unwind: { path: '$items.product' } },
+    {
+      $unwind: {
+        path: '$items.product.variants',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $match: {
+        $expr: {
+          $or: [
+            {
+              $eq: [
+                '$items.variant',
+                '$items.product.variants._id'
+              ]
+            },
+            {
+              $and: [
+                { $eq: ['$items.variant', null] },
+                {
+                  $eq: [
+                    {
+                      $type:
+                        '$items.product.variants'
+                    },
+                    'missing'
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      $addFields: {
+        itemPrice: {
+          amount: {
+            $multiply: [
+              '$items.quantity',
+              {
+                $ifNull: [
+                  '$selectedVariant.price.amount',
+                  '$items.product.price.amount'
+                ]
+              }
+            ]
+          },
+          currency: {
+            $ifNull: [
+              '$selectedVariant.price.currency',
+              '$items.product.price.currency'
+            ]
+          }
+        }
+      }
+    },
+    {
+      $group: {
+        _id: '$_id',
+        totalAmount: {
+          $sum: '$itemPrice.amount'
+        },
+        currency: {
+          $first: '$itemPrice.currency'
+        },
+        items: { $push: '$items' }
+      }
+    }
+  ] )
         if (!cart) {
             return res.status(404).json({
                 success: false,

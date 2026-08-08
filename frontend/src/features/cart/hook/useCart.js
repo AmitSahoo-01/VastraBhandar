@@ -1,6 +1,6 @@
-import { addItem,getCart } from "../service/cart.api.js";
+import { addItem, getCart } from "../service/cart.api.js";
 import { useDispatch } from "react-redux";
-import { addItem as addItemToCart, setItems } from "../state/cart.slice.js";
+import { setCart } from "../state/cart.slice.js";
 import { toast } from "sonner";
 
 
@@ -11,9 +11,7 @@ export const useCart = () => {
         try {
             const data = await addItem({ productId, variantId, quantity });
             if (data?.success) {
-                if (data?.items) {
-                    dispatch(addItemToCart(data.items));
-                }
+                await handleGetCart();
                 if (data?.message) {
                     toast.success(data.message);
                 }
@@ -27,18 +25,31 @@ export const useCart = () => {
         }
     }
 
-    async function handleGetCart(){
-        try{
+    async function handleGetCart() {
+        try {
             const data = await getCart();
-            if(data?.success && data?.cart){
-                dispatch(setItems(data.cart.items));
+            if (data?.success && data?.cart) {
+                const cartData = Array.isArray(data.cart) ? data.cart[0] : data.cart;
+                if (cartData) {
+                    dispatch(setCart({
+                        items: cartData.items || [],
+                        totalAmount: cartData.totalAmount || 0,
+                        currency: cartData.currency || "INR"
+                    }));
+                } else {
+                    dispatch(setCart({
+                        items: [],
+                        totalAmount: 0,
+                        currency: "INR"
+                    }));
+                }
             }
             return data;
-        }catch(error){
+        } catch (error) {
             toast.error(error?.message || "Error fetching cart");
             return error;
         }
     }
 
-    return { handleAddItem,handleGetCart }
-}
+    return { handleAddItem, handleGetCart };
+};

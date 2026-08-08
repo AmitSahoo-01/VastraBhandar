@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../features/auth/state/auth.slice.js';
 import { useWishlist } from '../features/wishlist/hook/useWishlist.js';
+import { useCart } from '../features/cart/hook/useCart.js';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -16,10 +17,12 @@ const Navbar = () => {
     const wishlistCount = wishlistItems.length;
 
     const { handleGetWishlist } = useWishlist();
+    const { handleGetCart } = useCart();
 
     useEffect(() => {
         if (user) {
             handleGetWishlist();
+            handleGetCart();
         }
     }, [user]);
 
